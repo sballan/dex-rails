@@ -6,9 +6,11 @@ class Url < ApplicationRecord
   def mechanize_page
     require 'mechanize'
     agent = Mechanize.new
-    agent.get(value)
-  rescue => ex
-    Rails.logger.error ex.message
+    page = agent.get(value)
+    return nil unless page.is_a? Mechanize::Page
+    page
+  rescue => e
+    Rails.logger.error(e.message)
     nil
   end
 

@@ -8,7 +8,7 @@ class Url < ApplicationRecord
     agent = Mechanize.new
     agent.get(value)
   rescue => ex
-    Rails.logger.info ex.message
+    Rails.logger.error ex.message
     nil
   end
 

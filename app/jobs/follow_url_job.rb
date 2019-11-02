@@ -1,5 +1,5 @@
 class FollowUrlJob < ApplicationJob
-  queue_as :default
+  queue_as :low
 
   def perform(page_url:, counter: 1)
     return if counter < 1

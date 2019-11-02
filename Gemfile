@@ -6,6 +6,8 @@ ruby '2.6.3'
 gem 'pg'
 gem 'nokogiri'
 gem 'mechanize'
+gem 'sidekiq'
+gem 'redis'
 
 gem 'rails', '~> 6.0.0'
 gem 'puma', '~> 3.11'

@@ -16,6 +16,8 @@ development:
   adapter: postgresql
   encoding: unicode
   database: dex-rails-development
+  pool: 10
+  timeout: 20000
   # username: rubyuser
   # password: <Password for rubyuser>
 

@@ -28,6 +28,10 @@ class FollowUrlJob < ApplicationJob
   def create_page_for_url(url)
     mechanize_page = url.mechanize_page
 
+    if (page = Page.find_by(url: url))
+      return page if page.created_at > 1.week.ago
+    end
+
     Page.create(
       url: url,
       body: mechanize_page.body,

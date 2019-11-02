@@ -9,24 +9,20 @@ class FollowUrlJob < ApplicationJob
       page_url = Url.find page_url
     end
 
+    page = create_page_for_url page_url
 
-    unless (page = Page.find_by(url: page_url))
-      page = create_page_for_url page_url
-    end
+    return if page.nil?
 
     link_urls = page.create_urls_for_links
 
     link_urls.map do | link_url |
       self.class.perform_later(page_url: link_url.id, counter: counter)
     end
-
-    link_urls.map do | url|
-      create_page_for_url(url)
-    end
   end
 
   def create_page_for_url(url)
     mechanize_page = url.mechanize_page
+    return if mechanize_page.nil?
 
     if (page = Page.find_by(url: url))
       return page if page.created_at > 1.week.ago

@@ -32,7 +32,9 @@ class FollowUrlJob < ApplicationJob
       url: url,
       body: mechanize_page.body,
       title: mechanize_page.title,
-      links: mechanize_page.links.map(&:resolved_uri)
+      links: mechanize_page.links.map do |mechanize_link|
+        mechanize_link.resolved_uri rescue nil
+      end.compact
     )
   end
 end

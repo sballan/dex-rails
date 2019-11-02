@@ -7,6 +7,9 @@ class Url < ApplicationRecord
     require 'mechanize'
     agent = Mechanize.new
     agent.get(value)
+  rescue => ex
+    Rails.logger.info ex.message
+    nil
   end
 
 end

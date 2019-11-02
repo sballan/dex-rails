@@ -12,7 +12,7 @@ class Page < ApplicationRecord
 
   def create_urls_for_links
     links.map do |link|
-      Url.create value: link
+      Url.find_or_create_by value: link
     end
   end
 

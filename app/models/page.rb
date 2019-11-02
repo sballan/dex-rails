@@ -7,7 +7,9 @@ class Page < ApplicationRecord
 
   def document
     require 'nokogiri'
-    Nokogiri::HTML.parse(body)
+    @document = Nokogiri::HTML.parse(body).tap do |noko_doc|
+      noko_doc.xpath("//script").remove
+    end
   end
 
   def create_urls_for_links

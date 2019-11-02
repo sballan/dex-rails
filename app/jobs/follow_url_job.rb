@@ -10,11 +10,9 @@ class FollowUrlJob < ApplicationJob
     end
 
     page = create_page_for_url page_url
-
     return if page.nil?
 
     link_urls = page.create_urls_for_links
-
     link_urls.map do | link_url |
       self.class.perform_later(page_url: link_url.id, counter: counter)
     end

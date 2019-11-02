@@ -1,5 +1,5 @@
-:concurrency: 20
+:concurrency: 32
 :queues:
-  - [critical, 4]
-  - [default, 2]
-  - [low, 1]
+  - [critical, 32]
+  - [default, 4]
+  - [low, 2]

@@ -1,7 +1,7 @@
 class CreatePagesForUrlsJob < ApplicationJob
-  queue_as :default
+  queue_as :low
 
-  def perform(num=10)
+  def perform(num=50)
     urls = Url.includes(:pages).where(pages: { url_id: nil }).limit(num)
     pages = urls.map do |url|
       # create_page_for_url url

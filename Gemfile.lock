@@ -83,6 +83,8 @@ GEM
     ffi (1.11.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    html2text (0.2.0)
+      nokogiri (~> 1.6)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     i18n (1.7.0)
@@ -277,6 +279,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.2)
   capybara (>= 2.15)
+  html2text
   jbuilder (~> 2.7)
   listen (>= 3.0.5, < 3.2)
   mechanize

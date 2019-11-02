@@ -1,5 +1,5 @@
 class CreatePageForUrlJob < ApplicationJob
-  queue_as :critical
+  queue_as :default
 
   def perform(url)
     if url.is_a? Integer

@@ -1,3 +1,3 @@
 class Query < ApplicationRecord
-  validates :value, presense: true
+  validates :value, presence: true
 end

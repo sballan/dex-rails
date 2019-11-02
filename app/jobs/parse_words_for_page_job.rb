@@ -9,6 +9,6 @@ class ParseWordsForPageJob < ApplicationJob
     require 'html2text'
     text = Html2Text.convert(page.document.text)
     words = text.split(/\s/)
-    words.each {|word| FindOrCreateWordJob.perform_later word }
+    words.each {|word| FinwdOrCreateWordJob.perform_later word }
   end
 end

@@ -3,7 +3,7 @@ class Url < ApplicationRecord
 
   validates :value, presence: true
 
-  def fetch
+  def mechanize_page
     require 'mechanize'
     agent = Mechanize.new
     agent.get(value)

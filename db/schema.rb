@@ -15,29 +15,15 @@ ActiveRecord::Schema.define(version: 2019_11_03_010531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "docs", force: :cascade do |t|
-    t.string "value"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "type"
-  end
-
-  create_table "docs_pages", id: false, force: :cascade do |t|
-    t.bigint "doc_id", null: false
-    t.bigint "page_id", null: false
-    t.index ["doc_id", "page_id"], name: "index_docs_pages_on_doc_id_and_page_id"
-    t.index ["page_id", "doc_id"], name: "index_docs_pages_on_page_id_and_doc_id"
-  end
-
   create_table "matches", force: :cascade do |t|
     t.bigint "query_id"
-    t.bigint "doc_id"
+    t.bigint "text_doc_id"
     t.bigint "page_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["doc_id"], name: "index_matches_on_doc_id"
     t.index ["page_id"], name: "index_matches_on_page_id"
     t.index ["query_id"], name: "index_matches_on_query_id"
+    t.index ["text_doc_id"], name: "index_matches_on_text_doc_id"
   end
 
   create_table "pages", force: :cascade do |t|
@@ -50,10 +36,24 @@ ActiveRecord::Schema.define(version: 2019_11_03_010531) do
     t.index ["url_id"], name: "index_pages_on_url_id"
   end
 
+  create_table "pages_text_docs", id: false, force: :cascade do |t|
+    t.bigint "text_doc_id", null: false
+    t.bigint "page_id", null: false
+    t.index ["page_id", "text_doc_id"], name: "index_pages_text_docs_on_page_id_and_text_doc_id"
+    t.index ["text_doc_id", "page_id"], name: "index_pages_text_docs_on_text_doc_id_and_page_id"
+  end
+
   create_table "queries", force: :cascade do |t|
     t.string "value"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "text_docs", force: :cascade do |t|
+    t.string "value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "type"
   end
 
   create_table "urls", force: :cascade do |t|
@@ -62,8 +62,8 @@ ActiveRecord::Schema.define(version: 2019_11_03_010531) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "matches", "docs"
   add_foreign_key "matches", "pages"
   add_foreign_key "matches", "queries"
+  add_foreign_key "matches", "text_docs"
   add_foreign_key "pages", "urls"
 end

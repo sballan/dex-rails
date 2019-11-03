@@ -1,7 +1,6 @@
-module Doc
-  class Base < ApplicationRecord
-    self.primary_key = "doc_id"
-    self.table_name = "doc"
+module Text
+  class Doc < ApplicationRecord
+    self.table_name = 'text_docs'
 
     has_many :matches
     has_and_belongs_to_many :pages

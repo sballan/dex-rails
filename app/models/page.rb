@@ -2,17 +2,7 @@ class Page < ApplicationRecord
   belongs_to :url
   has_and_belongs_to_many :text_docs
 
-  validates :title, presence: true
-  validates :body, presence: true
-  validates :links, presence: true
-
   serialize :links, JSON
-
-  def create_urls_for_links
-    self[:links].map do |link|
-      Url.find_or_create_by value: link
-    end
-  end
 
   def refresh
     self[:body] = mechanize_page.body

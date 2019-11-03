@@ -21,13 +21,20 @@ class Page < ApplicationRecord
   end
 
   def noko_doc
-    refresh! unless self[:body].present?
-
-    require 'nokogiri'
-    doc = Nokogiri::HTML.parse(self[:body])
-    doc.xpath("//script").remove
-    doc
+    return nil unless self[:body].present?
+    @noko_doc ||= begin
+      require 'nokogiri'
+      doc = Nokogiri::HTML.parse(self[:body])
+      doc.xpath("//script").remove
+      doc
+    end
   end
+
+  def noko_doc!
+    refresh! unless self[:body].present?
+    noko_doc
+  end
+
 
   def mechanize_page
     @mechanize_page || fetch_mechanize_page
@@ -40,6 +47,8 @@ class Page < ApplicationRecord
     return nil unless page.is_a?(Mechanize::Page)
 
     @mechanize_page = agent.get(url.value)
+  rescue Mechanize::ResponseCodeError => e
+    Rails.logger.error e.message
+    nil
   end
-
 end

@@ -5,7 +5,7 @@ module Text
         page = Page.find page
       end
 
-      return [] if page.mechanize_page.nil?
+      return [] if page.noko_doc!.nil?
 
       words = page.noko_doc.text.split(/\s/).reject(&:empty?)
       words.map do |word|

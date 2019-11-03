@@ -4,8 +4,6 @@ development:
   database: dex-rails-development
   pool: 150
   timeout: 5000
-  # username: rubyuser
-  # password: <Password for rubyuser>
 
 # test:
 #   <<: *default

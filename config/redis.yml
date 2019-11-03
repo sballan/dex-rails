@@ -5,5 +5,5 @@ test:
   host: "localhost"
   port: "6379"
 production:
-  host: "redis://h:p5eb636f192bcdf720bb36e3261a2eb9ed980582fb1b383f8bef6efc42b8d67f7@ec2-18-204-39-101.compute-1.amazonaws.com:20889"
+  host: <%= ENV.fetch("REDIS_URL") { "localhost" } %>
   port: "6379"

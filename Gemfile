@@ -3,6 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+gem 'pry-rails'
 gem 'pg'
 gem 'nokogiri'
 gem 'mechanize'
@@ -17,16 +18,15 @@ gem 'sass-rails', '~> 5'
 gem 'webpacker', '~> 4.0'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.7'
+gem 'dotenv-rails'
 
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'foreman'
 
 group :development, :test do
-  gem 'pry-rails'
   gem 'rubocop-rails'
   gem 'rspec-rails'
   gem 'sqlite3', '~> 1.4'
-  gem 'dotenv-rails'
 end
 
 group :development do

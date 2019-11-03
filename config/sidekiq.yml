@@ -1,6 +1,6 @@
-:concurrency: 1
+:concurrency: 18
 :queues:
-  - [critical, 32]
-  - [default, 4]
-  - [low, 2]
-  - [redis_only, 1]
+  - [internal, 4]
+  - [critical, 64]
+  - [default, 16]
+  - [low, 1]

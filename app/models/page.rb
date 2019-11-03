@@ -1,6 +1,8 @@
 class Page < ApplicationRecord
   belongs_to :url
-  has_and_belongs_to_many :docs, class_name: '::Text::Doc'
+
+  has_many :page_fragments
+  has_many :docs, class_name: '::Text::Doc',through: :page_fragments
 
   serialize :links, JSON
 

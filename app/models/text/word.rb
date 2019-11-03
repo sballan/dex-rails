@@ -8,9 +8,11 @@ module Text
       return [] if page.noko_doc!.nil?
 
       words = page.noko_doc.text.split(/\s/).reject(&:empty?)
-      words.map do |word|
+      words.map! do |word|
         self.find_or_create_by(value: word)
       end
+
+      words.uniq
     end
   end
 end

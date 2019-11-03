@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_03_010531) do
+ActiveRecord::Schema.define(version: 2019_11_03_221042) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,13 +22,6 @@ ActiveRecord::Schema.define(version: 2019_11_03_010531) do
     t.string "type"
   end
 
-  create_table "docs_pages", id: false, force: :cascade do |t|
-    t.bigint "doc_id", null: false
-    t.bigint "page_id", null: false
-    t.index ["doc_id", "page_id"], name: "index_docs_pages_on_doc_id_and_page_id"
-    t.index ["page_id", "doc_id"], name: "index_docs_pages_on_page_id_and_doc_id"
-  end
-
   create_table "matches", force: :cascade do |t|
     t.bigint "query_id"
     t.bigint "doc_id"
@@ -38,6 +31,15 @@ ActiveRecord::Schema.define(version: 2019_11_03_010531) do
     t.index ["doc_id"], name: "index_matches_on_doc_id"
     t.index ["page_id"], name: "index_matches_on_page_id"
     t.index ["query_id"], name: "index_matches_on_query_id"
+  end
+
+  create_table "page_fragments", force: :cascade do |t|
+    t.bigint "page_id", null: false
+    t.bigint "doc_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["doc_id"], name: "index_page_fragments_on_doc_id"
+    t.index ["page_id"], name: "index_page_fragments_on_page_id"
   end
 
   create_table "pages", force: :cascade do |t|
@@ -65,5 +67,7 @@ ActiveRecord::Schema.define(version: 2019_11_03_010531) do
   add_foreign_key "matches", "docs"
   add_foreign_key "matches", "pages"
   add_foreign_key "matches", "queries"
+  add_foreign_key "page_fragments", "docs"
+  add_foreign_key "page_fragments", "pages"
   add_foreign_key "pages", "urls"
 end

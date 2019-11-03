@@ -4,7 +4,9 @@ module Text
     # self.table_name = 'docs'
 
     has_many :matches
-    has_and_belongs_to_many :pages
+    has_many :page_fragments
+    has_many :pages, through: :page_fragments
+
   end
 end
 

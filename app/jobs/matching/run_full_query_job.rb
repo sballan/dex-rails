@@ -8,7 +8,7 @@ module Matching
 
     def parse_words(query)
       words = query.split(/\s/)
-      words.map!{|word| Doc::Word.find_or_create_by(value: word)}
+      words.map!{|word| Text::Word.find_or_create_by(value: word)}
 
       matches = words.map do |word|
         word.pages.map do |page|

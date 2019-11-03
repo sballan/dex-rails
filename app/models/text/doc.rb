@@ -1,6 +1,7 @@
 module Text
   class Doc < ApplicationRecord
-    self.table_name = 'text_docs'
+    # Not needed, but here for clarity
+    # self.table_name = 'docs'
 
     has_many :matches
     has_and_belongs_to_many :pages

@@ -3,3 +3,4 @@
   - [critical, 32]
   - [default, 4]
   - [low, 2]
+  - [redis_only, 1]

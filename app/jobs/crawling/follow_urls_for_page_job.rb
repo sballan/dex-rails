@@ -2,7 +2,7 @@ module Crawling
   class FollowUrlsForPageJob < ApplicationJob
     queue_as :low
 
-    def perform(page:, depth: 1)
+    def perform(page:, depth: 1, parse_words: false)
       return if depth < 1
       depth -= 1
 
@@ -17,8 +17,9 @@ module Crawling
         url.pages.create
       end
 
-      link_pages.map do | page |
+      link_pages.map do |page|
         self.class.perform_later(page: page.id, depth: depth)
+        Matching::ParsePageWordsJob.perform_later(page.id) if parse_words
       end
     end
   end

@@ -2,6 +2,6 @@
 
 class Match < ApplicationRecord
   belongs_to :query   # input to match against
-  belongs_to :page    # the
-  belongs_to :doc, class_name: '::Docs::Base'
+  belongs_to :page
+  belongs_to :doc
 end

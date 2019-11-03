@@ -1,5 +1,6 @@
 class Page < ApplicationRecord
   belongs_to :url
+  has_and_belongs_to_many :docs, class_name: '::Docs::Base'
 
   serialize :links, JSON
 

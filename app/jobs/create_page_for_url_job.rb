@@ -5,7 +5,8 @@ class CreatePageForUrlJob < ApplicationJob
     if url.is_a? Integer
       url = Url.find url
     end
-    create_page_for_url url
+    page = create_page_for_url url
+    Matching::RunFullPageParseJob.perform_later page.id
   end
 
   def create_page_for_url(url)

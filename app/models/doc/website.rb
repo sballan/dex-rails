@@ -1,2 +1,2 @@
-class Doc::Website < Doc::Base
+class Doc::Website < Doc::Doc
 end

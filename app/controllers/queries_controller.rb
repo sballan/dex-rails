@@ -29,6 +29,7 @@ class QueriesController < ApplicationController
 
     respond_to do |format|
       if @query.save
+        @query.process_async
         format.html { redirect_to @query, notice: 'Query was successfully created.' }
         format.json { render :show, status: :created, location: @query }
       else

@@ -85,6 +85,7 @@ GEM
       railties (>= 3.2, < 6.1)
     erubi (1.9.0)
     ffi (1.11.1)
+    foreman (0.86.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     html2text (0.2.0)
@@ -284,6 +285,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   capybara (>= 2.15)
   dotenv-rails
+  foreman
   html2text
   jbuilder (~> 2.7)
   listen (>= 3.0.5, < 3.2)

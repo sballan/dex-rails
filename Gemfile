@@ -9,6 +9,7 @@ gem 'mechanize'
 gem 'sidekiq'
 gem 'redis'
 gem 'html2text'
+gem 'redis-objects'
 
 gem 'rails', '~> 6.0.0'
 gem 'puma', '~> 3.11'

@@ -6,7 +6,7 @@ module Crawling
       if page.is_a? Integer
         page = Page.find Page
       end
-      page.refresh!
+      page.refresh
     end
   end
 end

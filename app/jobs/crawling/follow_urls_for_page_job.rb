@@ -10,7 +10,7 @@ module Crawling
         page = Page.find page
       end
 
-      page.refresh!
+      page.refresh
 
       page.links.each do |link|
         url = Url.find_or_create_by value: link

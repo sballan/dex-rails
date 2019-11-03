@@ -12,11 +12,7 @@ class Page < ApplicationRecord
     self[:links] = mechanize_page.links.map do |mechanize_link|
       mechanize_link.resolved_uri rescue nil
     end.compact
-    self
-  end
 
-  def refresh!
-    refresh
     return self if save!
   end
 
@@ -31,7 +27,7 @@ class Page < ApplicationRecord
   end
 
   def noko_doc!
-    refresh! unless self[:body].present?
+    refresh unless self[:body].present?
     noko_doc
   end
 

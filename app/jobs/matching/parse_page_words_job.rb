@@ -7,7 +7,10 @@ module Matching
         page = Page.find page
       end
 
-      page.docs << Text::Word.create_words_for_page(page)
+      words = Text::Word.create_words_for_page(page)
+      return if words.empty?
+
+      page.docs << words
       page.save!
     end
   end

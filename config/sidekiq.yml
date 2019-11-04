@@ -1,6 +1,6 @@
-:concurrency: 30
+:concurrency: 5
 :queues:
-  - [internal, 4]
   - [critical, 64]
-  - [default, 1]
-  - [low, 1]
+  - [downloading, 32]
+  - [crawling, 4]
+  - [parsing, 1]

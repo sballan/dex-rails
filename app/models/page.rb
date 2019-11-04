@@ -1,4 +1,6 @@
 class Page < ApplicationRecord
+  class BadDownloadError < StandardError; end
+
   belongs_to :url
 
   has_many :page_fragments
@@ -7,7 +9,7 @@ class Page < ApplicationRecord
   serialize :links, JSON
 
   def refresh
-    raise "This page cannot be fetched" if mechanize_page.nil?
+    raise BadDownloadError.new("This page cannot be fetched") if mechanize_page.nil?
 
     self[:body] = mechanize_page.body
     self[:title] = mechanize_page.title

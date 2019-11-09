@@ -1,40 +1,48 @@
 class Page < ApplicationRecord
-  class BadDownloadError < StandardError; end
+  include Redis::Objects
 
-  belongs_to :url
+  belongs_to :host
+  has_many :page_words
+  has_many :words, through: :page_words
 
-  has_many :page_fragments
-  has_many :docs, class_name: '::Text::Doc',through: :page_fragments
+  validates :url_string, presence: true, uniqueness: true
 
-  serialize :links, JSON
+  value :cached_body, marshal: true, compress: true, expireat: { Time.now + 20.minutes }
+  value :cached_title, expireat: { Time.now + 20.minutes }
+  set   :cached_links, expireat: { Time.now + 20.minutes }
 
-  def refresh
-    raise BadDownloadError.new("This page cannot be fetched") if mechanize_page.nil?
+  def uri
+    @uri ||= begin
+      URI(self[:url_string])
+    end
+  end
 
-    self[:body] = mechanize_page.body
-    self[:title] = mechanize_page.title
-    self[:links] = mechanize_page.links.map do |mechanize_link|
-      mechanize_link.resolved_uri rescue nil
-    end.compact
+  def cache_page(force = false)
+    unless cached_body.present? || force
+      cached_body.value = mechanize_page.body
+    end
 
-    return self if save!
+    unless cached_title.present? || force
+      cached_title.value = mechanize_page.title
+    end
+
+    unless cached_links.present? || force
+      cached_links.clear
+      cached_links.merge mechanize_page.links.map do |mechanize_link|
+        mechanize_link.resolved_uri rescue nil
+      end.compact
+    end
   end
 
   def noko_doc
-    return nil unless self[:body].present?
+    return nil unless cached_body.present?
     @noko_doc ||= begin
       require 'nokogiri'
-      doc = Nokogiri::HTML.parse(self[:body])
+      doc = Nokogiri::HTML.parse(cached_page_body.value)
       doc.xpath("//script").remove
       doc
     end
   end
-
-  def noko_doc!
-    refresh unless self[:body].present?
-    noko_doc
-  end
-
 
   def mechanize_page
     @mechanize_page || fetch_mechanize_page
@@ -43,10 +51,10 @@ class Page < ApplicationRecord
   def fetch_mechanize_page
     require 'mechanize'
     agent = Mechanize.new
-    page = agent.get(url.value)
-    return nil unless page.is_a?(Mechanize::Page)
+    @mechanize_page = agent.get(self[:url_string])
+    return nil unless @mechanize_page.is_a?(Mechanize::Page)
 
-    @mechanize_page = agent.get(url.value)
+    @mechanize_page
   rescue Mechanize::ResponseCodeError => e
     Rails.logger.error e.message
     nil

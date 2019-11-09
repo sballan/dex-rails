@@ -10,64 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_03_221042) do
+ActiveRecord::Schema.define(version: 2019_11_09_193835) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "docs", force: :cascade do |t|
-    t.string "value"
+  create_table "hosts", force: :cascade do |t|
+    t.string "host_url_string"
+    t.integer "limit_time", default: 5
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "type"
-  end
-
-  create_table "matches", force: :cascade do |t|
-    t.bigint "query_id"
-    t.bigint "doc_id"
-    t.bigint "page_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["doc_id"], name: "index_matches_on_doc_id"
-    t.index ["page_id"], name: "index_matches_on_page_id"
-    t.index ["query_id"], name: "index_matches_on_query_id"
-  end
-
-  create_table "page_fragments", force: :cascade do |t|
-    t.bigint "page_id", null: false
-    t.bigint "doc_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["doc_id"], name: "index_page_fragments_on_doc_id"
-    t.index ["page_id"], name: "index_page_fragments_on_page_id"
+    t.index ["host_url_string"], name: "index_hosts_on_host_url_string", unique: true
   end
 
   create_table "pages", force: :cascade do |t|
-    t.bigint "url_id", null: false
-    t.text "links"
-    t.string "title"
-    t.binary "body"
+    t.string "url_string"
+    t.bigint "host_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["url_id"], name: "index_pages_on_url_id"
+    t.index ["host_id"], name: "index_pages_on_host_id"
+    t.index ["url_string"], name: "index_pages_on_url_string", unique: true
   end
 
-  create_table "queries", force: :cascade do |t|
-    t.string "value"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "urls", force: :cascade do |t|
-    t.string "value"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  add_foreign_key "matches", "docs"
-  add_foreign_key "matches", "pages"
-  add_foreign_key "matches", "queries"
-  add_foreign_key "page_fragments", "docs"
-  add_foreign_key "page_fragments", "pages"
-  add_foreign_key "pages", "urls"
+  add_foreign_key "pages", "hosts"
 end

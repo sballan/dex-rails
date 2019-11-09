@@ -3,26 +3,40 @@ class Host < ApplicationRecord
 
   has_many :pages
 
-  validates :url_string, presence: true, uniqueness: true
+  validates :limit_time, presence: true
+  validates :host_url_string, presence: true, uniqueness: true
 
-  value :cached_robots_txt, compress: true, expireat: -> { Time.now + 1.hour }
+  value :last_crawled, marshal: true, expireat: -> { Time.now + 1.minute }
 
-  def robots_txt
-    if cached_robots_txt.empty?
-      cached_robots_txt.value = fetch_robots_txt
+  value :crawl_started, marshal: true, expireat: -> { Time.now + 1.minute }
+  counter :crawls_since_started, expireat: -> { Time.now + 1.hour }
+
+  def increment_crawls
+    crawls_since_started.increment
+  end
+
+  def rate_limit_reached?
+    return false unless crawl_started.present?
+    usage = crawls_since_started.value * self[:limit_time]
+
+    (crawl_started.value + usage) > Time.now
+  end
+
+  def found?
+    robotstxt_parser.found?
+  end
+
+  def allowed?(url_string)
+    robotstxt_parser.allowed?(url_string)
+  end
+
+  # @return [Robotstxt::Parser]
+  def robotstxt_parser
+    @robotstxt_parser ||= Robotstxt::Parser.new
+    unless @robotstxt_parser.found?
+      @robotstxt_parser.get(self[:host_url_string])
     end
-    cached_robots_txt.value
+    @robotstxt_parser
   end
-
-  def robots_txt_url
-    "#{url_string}/robots.txt"
-  end
-
-  def fetch_robots_txt
-    require 'mechanize'
-    agent = Mechanize.new
-    agent.get(robots_txt_url)
-  end
-
 
 end

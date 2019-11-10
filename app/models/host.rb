@@ -6,17 +6,22 @@ class Host < ApplicationRecord
   validates :limit_time, presence: true
   validates :host_url_string, presence: true, uniqueness: true
 
-  value :last_crawled, marshal: true, expireat: -> { Time.now + 1.minute }
-
-  value :crawl_started, marshal: true, expireat: -> { Time.now + 1.minute }
+  value :crawl_started, marshal: true, expireat: -> { Time.now + 1.hour }
   counter :crawls_since_started, expireat: -> { Time.now + 1.hour }
 
+  set :urls_to_fetch
+  set :urls_fetched
+
   def increment_crawls
+    crawl_started = Time.zone.now if crawl_started.nil?
+
     crawls_since_started.increment
   end
 
   def rate_limit_reached?
-    return false unless crawl_started.present?
+    return false if crawl_started.nil?
+    return false if crawls_since_started.value == 0
+
     usage = crawls_since_started.value * self[:limit_time]
 
     (crawl_started.value + usage) > Time.now

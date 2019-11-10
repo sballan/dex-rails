@@ -7,30 +7,83 @@ class Page < ApplicationRecord
 
   validates :url_string, presence: true, uniqueness: true
 
-  value :cached_body, marshal: true, compress: true, expireat: -> { Time.now + 20.minutes }
-  value :cached_title, expireat: -> { Time.now + 20.minutes }
-  set   :cached_links, expireat: -> { Time.now + 20.minutes }
+  value :cached_body, marshal: true, compress: true, expireat: -> { Time.now + 1.hour }
+  value :cached_title, expireat: -> { Time.now + 1.hour }
+  set   :cached_links, expireat: -> { Time.now + 1.hour }
+  hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.hour }
+
+  hash_key :cached_page, marshal: true, compress: true, expireat: -> { Time.now + 1.seconds }
+
+
+  def crawl
+    cache_page
+  end
 
   def cache_page(force = false)
-    if self.host.rate_limit_reached?
-      Rails.logger.debug "Rate limit reached, skipping #{self[:url_string]}"
-      return false
+    @cache_page ||= begin
+      Rails.logger.debug "Refreshing cached_page: #{self[:url_string]}"
+      {
+        title: cache_title,
+        body: cache_body,
+        links: cache_links,
+        words_map: cache_words_map
+      }
     end
+  end
 
-    if cached_body.nil? || force
+  def cache_body
+    @cache_body ||= begin
+      Rails.logger.debug "Refreshing cached_body: #{self[:url_string]}"
       cached_body.value = mechanize_page.body
+    end
+  end
 
+  def cache_title
+    @cache_title ||= begin
+      Rails.logger.debug "Refreshing cached_title: #{self[:url_string]}"
       cached_title.value = mechanize_page.title
+    end
+  end
 
+  def cache_links
+    @cache_links ||= begin
+      Rails.logger.debug "Refreshing cached_links: #{self[:url_string]}"
       links = mechanize_page.links.map do |mechanize_link|
         mechanize_link.resolved_uri.to_s rescue nil
       end.compact
 
       cached_links.clear
       cached_links.merge links
-
-      return true
+      cached_links.to_a
     end
+  end
+
+  def cache_words_map(force = false)
+    @cache_words_map = nil if force
+
+    @cache_words_map ||= begin
+      Rails.logger.debug "Refreshing cached_words_map: #{self[:url_string]}"
+
+      words_map = {}
+      extracted_words = extract_words
+
+      return nil if extracted_words.empty?
+
+      extracted_words.each do |word|
+        words_map[word] ||= 0
+        words_map[word] += 1
+      end
+
+      cached_words_map.bulk_set(words_map)
+
+      cached_words_map.to_h
+    end
+  end
+
+  def extract_words
+    return nil if noko_doc.nil?
+    text = Html2Text.convert noko_doc.text
+    text.split /\s/
   end
 
   def mechanize_page
@@ -39,18 +92,15 @@ class Page < ApplicationRecord
 
   # @return [Nokogiri::HTML::Document]
   def noko_doc
-    return nil unless cached_body.present?
-    @noko_doc ||= begin
-      require 'nokogiri'
-      doc = Nokogiri::HTML.parse(cached_body.value)
-      doc.xpath("//script").remove
-      doc
-    end
+    Nokogiri::HTML.parse(cache_body)
   end
 
   # @return [Mechanize::Page]
   def fetch_mechanize_page
-    require 'mechanize'
+    if self.host.rate_limit_reached?
+      raise "Rate limit reached, skipping #{self[:url_string]}"
+    end
+
     agent = Mechanize.new
 
     self.host.increment_crawls

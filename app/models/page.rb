@@ -16,7 +16,25 @@ class Page < ApplicationRecord
 
 
   def crawl
-    cache_page
+    words_map = cache_page[:words_map]
+    words_strings = words_map.keys
+    word_objects = words_strings.map {|w| {value: w} }
+
+    words = word_objects.map do |word_object|
+      Word.find_or_create_by word_object
+    end
+
+    page_words = words.map do |word|
+      PageWord.find_or_create_by word: word, page: self
+    end
+
+    page_words.each do |page_word|
+      page_word[:page_count] = words_map[page_word.word.value].to_i
+      page_word.save
+    end
+
+    binding.pry
+
   end
 
   def cache_page(force = false)

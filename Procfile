@@ -1,4 +1,4 @@
-web: bundle exec rails s -b 0.0.0.0
-web_single: QUEUE_ADAPTER=async bundle exec rails s -b 0.0.0.0
+web: bundle exec rails s -p $PORT -e $RAILS_ENV
+web_single: QUEUE_ADAPTER=async bundle exec rails s -p $PORT -e $RAILS_ENV
 
 worker: bundle exec sidekiq

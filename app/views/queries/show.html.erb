@@ -5,7 +5,25 @@
   <%= @query.value %>
 </p>
 
-results
+<table>
+  <thead>
+    <tr>
+      <th>Value</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @queries&.each do |query| %>
+      <tr>
+        <td><%= query.value %></td>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
 
 <%= link_to 'Edit', edit_query_path(@query) %> |
 <%= link_to 'Back', queries_path %>

@@ -1,10 +1,9 @@
 class QueriesController < ApplicationController
   before_action :set_query, only: [:show, :edit, :update, :destroy]
 
-  # GET /queries
-  # GET /queries.json
   def index
-    @queries = Query.all
+    @query = Query.new
+    @queries = Query.all.limit(3).order('id desc')
   end
 
   # GET /queries/1
@@ -29,8 +28,7 @@ class QueriesController < ApplicationController
 
     respond_to do |format|
       if @query.save
-        @query.process_async
-        format.html { redirect_to @query, notice: 'Query was successfully created.' }
+        format.html { redirect_to queries_path, notice: 'Query was successfully created.' }
         format.json { render :show, status: :created, location: @query }
       else
         format.html { render :new }

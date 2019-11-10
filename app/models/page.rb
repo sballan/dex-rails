@@ -10,10 +10,8 @@ class Page < ApplicationRecord
   value :cached_body, marshal: true, compress: true, expireat: -> { Time.now + 1.hour }
   value :cached_title, expireat: -> { Time.now + 1.hour }
   set   :cached_links, expireat: -> { Time.now + 1.hour }
+
   hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.hour }
-
-  hash_key :cached_page, marshal: true, compress: true, expireat: -> { Time.now + 1.seconds }
-
 
   def crawl
     words_map = cache_page[:words_map]
@@ -33,13 +31,13 @@ class Page < ApplicationRecord
       page_word.save
     end
 
-    binding.pry
-
   end
 
   def cache_page(force = false)
+    @cache_page = nil if force
+
     @cache_page ||= begin
-      Rails.logger.debug "Refreshing cached_page: #{self[:url_string]}"
+      Rails.logger.debug "Refreshing cached fields: #{self[:url_string]}"
       {
         title: cache_title,
         body: cache_body,
@@ -49,10 +47,20 @@ class Page < ApplicationRecord
     end
   end
 
-  def cache_body
+  def cache_body(force = false)
+    if force
+      @cache_body = nil
+      cached_body.value = nil
+    end
+
     @cache_body ||= begin
-      Rails.logger.debug "Refreshing cached_body: #{self[:url_string]}"
-      cached_body.value = mechanize_page.body
+      binding.pry
+      if cached_body.nil?
+        Rails.logger.debug "Refreshing cached_body: #{self[:url_string]}"
+        cached_body.value = mechanize_page.body
+      else
+        cached_body.value
+      end
     end
   end
 
@@ -80,32 +88,38 @@ class Page < ApplicationRecord
     @cache_words_map = nil if force
 
     @cache_words_map ||= begin
-      Rails.logger.debug "Refreshing cached_words_map: #{self[:url_string]}"
+      if cached_words_map.empty? || force
+        Rails.logger.debug "Refreshing cached_words_map: #{self[:url_string]}"
 
-      words_map = {}
-      extracted_words = extract_words
+        words_map = {}
+        extracted_words = extract_words
 
-      return nil if extracted_words.empty?
+        return nil if extracted_words.empty?
 
-      extracted_words.each do |word|
-        words_map[word] ||= 0
-        words_map[word] += 1
+        extracted_words.each do |word|
+          words_map[word] ||= 0
+          words_map[word] += 1
+        end
+
+        cached_words_map.bulk_set(words_map)
+
+        cached_words_map.to_h
+      else
+        cached_words_map.to_h
       end
-
-      cached_words_map.bulk_set(words_map)
-
-      cached_words_map.to_h
     end
   end
 
   def extract_words
-    return nil if noko_doc.nil?
-    text = Html2Text.convert noko_doc.text
-    text.split /\s/
+    @extract_words ||= begin
+      Rails.logger.debug "Refreshing extract_words: #{self[:url_string]}"
+      text = Html2Text.convert noko_doc.text
+      text.split /\s/
+    end
   end
 
   def mechanize_page
-    @mechanize_page || fetch_mechanize_page
+    @mechanize_page ||= fetch_mechanize_page
   end
 
   # @return [Nokogiri::HTML::Document]
@@ -118,6 +132,8 @@ class Page < ApplicationRecord
     if self.host.rate_limit_reached?
       raise "Rate limit reached, skipping #{self[:url_string]}"
     end
+
+    Rails.logger.debug "\n\nFetching page: #{self[:url_string]}\n"
 
     agent = Mechanize.new
 

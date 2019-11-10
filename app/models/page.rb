@@ -57,7 +57,6 @@ class Page < ApplicationRecord
     end
 
     @cache_body ||= begin
-      binding.pry
       if cached_body.nil?
         Rails.logger.debug "Refreshing cached_body: #{self[:url_string]}"
         cached_body.value = mechanize_page.body

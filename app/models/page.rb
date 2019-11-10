@@ -13,6 +13,10 @@ class Page < ApplicationRecord
 
   hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.hour }
 
+  def crawl_links
+    pages = cache_links.map {|l| Page.find_or_create_by url_string: l}
+  end
+
   def crawl
     words_map = cache_page[:words_map]
     words_strings = words_map.keys
@@ -30,7 +34,6 @@ class Page < ApplicationRecord
       page_word[:page_count] = words_map[page_word.word.value].to_i
       page_word.save
     end
-
   end
 
   def cache_page(force = false)

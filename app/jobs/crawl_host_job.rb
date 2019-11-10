@@ -8,9 +8,5 @@ class CrawlHostJob < ApplicationJob
     page = host.pages.create url_string: url_string
 
     page.crawl
-
-
-
-
   end
 end

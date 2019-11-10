@@ -303,6 +303,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.2)
   capybara (>= 2.15)
+  connection_pool
   dotenv-rails
   foreman
   html2text

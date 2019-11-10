@@ -11,6 +11,7 @@ gem 'sidekiq'
 gem 'redis'
 gem 'html2text'
 gem 'redis-objects'
+gem 'connection_pool'
 
 gem 'rails', '~> 6.0.0'
 gem 'puma', '~> 3.11'

@@ -22,8 +22,10 @@ class Page < ApplicationRecord
   end
 
   def crawl
+    GC.start(full_mark: true, immediate_sweep: true)
+
     links = cache_links
-    links.each {|link| Page.find_or_create_by url_string: link}
+    CreatePagesForUrlsJob.perform_later links
 
     # Get words on this page
     words_map = cache_page[:words_map]
@@ -50,7 +52,7 @@ class Page < ApplicationRecord
       page_word.save
     end
 
-    GC.start(full_mark: true, immediate_sweep: true)
+    GC.start(full_mark: false, immediate_sweep: false)
   end
 
   def cache_page(force = false)
@@ -152,8 +154,6 @@ class Page < ApplicationRecord
       raise LimitReached.new "Rate limit reached, skipping #{self[:url_string]}"
     end
 
-    self.host.found? &&
-
     unless self.host.found?
       raise "Cannot find this host: #{self.host.host_url_string}"
     end
@@ -169,11 +169,11 @@ class Page < ApplicationRecord
     self.host.increment_crawls
 
     @mechanize_page = agent.get(self[:url_string])
-    return nil unless @mechanize_page.is_a?(Mechanize::Page)
+    raise BadCrawl.new 'Only html pages are supported' unless @mechanize_page.is_a?(Mechanize::Page)
 
     @mechanize_page
   rescue Mechanize::ResponseCodeError => e
     Rails.logger.error e.message
-    nil
+    raise LimitReached.new "Couldn't reach this page, try again later"
   end
 end

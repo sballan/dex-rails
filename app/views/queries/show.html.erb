@@ -8,7 +8,9 @@
 <table>
   <thead>
     <tr>
-      <th>Value</th>
+      <th>Matched String</th>
+      <th>Relevance</th>
+      <th>Url</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -16,8 +18,9 @@
   <tbody>
     <% @hits&.each do |hit| %>
       <tr>
-        <td><%= hit %></td>
-
+        <td><%= hit[:word] %></td>
+        <td><%= "#{((hit[:count].to_f / hit[:total_words_on_page]) * 100).to_s[0..3]}%" %></td>
+        <td> <a href="<%= hit[:url_string]%>"><%= hit[:url_string]%></a></td>
       </tr>
     <% end %>
   </tbody>

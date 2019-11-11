@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   resources :queries
+  resources :hosts
+  resources :pages
 
   root 'queries#index'
 end

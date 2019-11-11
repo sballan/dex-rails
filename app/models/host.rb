@@ -1,38 +1,59 @@
 class Host < ApplicationRecord
   include Redis::Objects
 
-  has_many :pages
+  has_many :pages, dependent: :destroy
 
   validates :limit_time, presence: true
   validates :host_url_string, presence: true, uniqueness: true
 
-  value :crawl_started, marshal: true, expireat: -> { Time.now + 1.hour }
+  value :crawl_started_at, marshal: true, expireat: -> { Time.now + 1.hour }
   counter :crawls_since_started, expireat: -> { Time.now + 1.hour }
 
   set :urls_to_fetch
   set :urls_fetched
 
-  def increment_crawls
-    crawl_started = Time.zone.now if crawl_started.nil?
+  def crawl
+    if crawl_started_at.nil?
+      crawl_started_at.value = Time.zone.now
+    end
 
+    url_strings = self.pages.map(&:url_string)
+
+    url_strings.each do |url_string|
+      CrawlHostJob.perform_later url_string
+    end
+  end
+
+  def increment_crawls
+    crawl_started_at.value = Time.zone.now if crawl_started_at.nil?
     crawls_since_started.increment
   end
 
   def rate_limit_reached?
-    return false if crawl_started.nil?
+    return false if crawl_started_at.nil?
     return false if crawls_since_started.value == 0
 
     usage = crawls_since_started.value * self[:limit_time]
 
-    (crawl_started.value + usage) > Time.now
+    (crawl_started_at.value + usage) > Time.now
   end
 
   def found?
-    robotstxt_parser.found?
+    if robotstxt_parser.found?
+      Rails.logger.debug "Host found: #{self[:host_url_string]}"
+      true
+    else
+      false
+    end
   end
 
   def allowed?(url_string)
-    robotstxt_parser.allowed?(url_string)
+    if robotstxt_parser.allowed?(url_string)
+      Rails.logger.debug "Url allowed: #{url_string}"
+      true
+    else
+      false
+    end
   end
 
   # @return [Robotstxt::Parser]

@@ -2,7 +2,7 @@ class Page < ApplicationRecord
   include Redis::Objects
 
   belongs_to :host
-  has_many :page_words
+  has_many :page_words, dependent: :destroy
   has_many :words, through: :page_words
 
   validates :url_string, presence: true, uniqueness: true
@@ -12,10 +12,6 @@ class Page < ApplicationRecord
   set   :cached_links, expireat: -> { Time.now + 1.hour }
 
   hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.hour }
-
-  def crawl_links
-    pages = cache_links.map {|l| Page.find_or_create_by url_string: l}
-  end
 
   def crawl
     words_map = cache_page[:words_map]
@@ -133,6 +129,16 @@ class Page < ApplicationRecord
   def fetch_mechanize_page
     if self.host.rate_limit_reached?
       raise "Rate limit reached, skipping #{self[:url_string]}"
+    end
+
+    self.host.found? &&
+
+    unless self.host.found?
+      raise "Cannot find this host: #{self.host.host_url_string}"
+    end
+
+    unless self.host.allowed?(self[:url_string])
+      raise "Now allowed to crawl this page: #{self[:url_string]}"
     end
 
     Rails.logger.debug "\n\nFetching page: #{self[:url_string]}\n"

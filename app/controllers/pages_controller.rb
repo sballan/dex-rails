@@ -10,6 +10,10 @@ class PagesController < ApplicationController
   # GET /pages/1
   # GET /pages/1.json
   def show
+    if params[:crawl]
+      Rails.logger.debug "Crawling #{@page.url_string}"
+      CrawlHostJob.perform_later @page.url_string
+    end
   end
 
   # GET /pages/new

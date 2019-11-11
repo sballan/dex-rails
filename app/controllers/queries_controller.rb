@@ -9,7 +9,7 @@ class QueriesController < ApplicationController
   # GET /queries/1
   # GET /queries/1.json
   def show
-    @hits = @query.execute
+    @hits = @query.response
   end
 
   # GET /queries/new

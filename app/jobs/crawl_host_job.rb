@@ -1,8 +1,13 @@
 
 class CrawlHostJob < ApplicationJob
-
   queue_as :crawling
+
   discard_on Page::BadCrawl
+
+  rescue_from(Page::LimitReached) do
+    retry_job queue: :retry_crawling, wait: 30.seconds
+  end
+
 
   def perform(url_string)
     uri = URI(url_string)

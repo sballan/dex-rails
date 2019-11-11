@@ -1,5 +1,6 @@
 class Page < ApplicationRecord
   class BadCrawl < StandardError; end
+  class LimitReached < StandardError; end
 
   include Redis::Objects
 
@@ -143,7 +144,7 @@ class Page < ApplicationRecord
   # @return [Mechanize::Page]
   def fetch_mechanize_page
     if self.host.rate_limit_reached?
-      raise "Rate limit reached, skipping #{self[:url_string]}"
+      raise LimitReached.new "Rate limit reached, skipping #{self[:url_string]}"
     end
 
     self.host.found? &&

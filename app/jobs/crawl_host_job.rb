@@ -19,5 +19,6 @@ class CrawlHostJob < ApplicationJob
     host.save!
 
     page.crawl
+    GC.start(full_mark: true, immediate_sweep: false)
   end
 end

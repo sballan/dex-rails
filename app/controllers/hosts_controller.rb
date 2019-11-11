@@ -4,7 +4,7 @@ class HostsController < ApplicationController
   # GET /hosts
   # GET /hosts.json
   def index
-    @hosts = Host.all
+    @hosts = Host.all.limit(100).order('id desc')
   end
 
   # GET /hosts/1

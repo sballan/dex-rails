@@ -8,13 +8,18 @@ class Page < ApplicationRecord
   has_many :page_words, dependent: :destroy
   has_many :words, through: :page_words
 
+  serialize :links, JSON
+  serialize :words_map, JSON
+
   validates :url_string, presence: true, uniqueness: true
 
   value :cached_body, marshal: true, compress: true, expireat: -> { Time.now + 1.hour }
-  value :cached_title, expireat: -> { Time.now + 1.minute }
-  set   :cached_links, expireat: -> { Time.now + 1.minute }
+  value :cached_title, expireat: -> { Time.now + 1.hour }
+  set   :cached_links, expireat: -> { Time.now + 1.hour }
 
-  hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.minute }
+  value :cached_word_count, marshal: true, expireat: -> { Time.now + 1.hour }
+  hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.hour }
+  value :cached_extracted_words, marshal: true, compress: true, expireat: -> { Time.now + 1.hour }
 
   before_validation do
     uri = URI(self[:url_string])
@@ -31,8 +36,9 @@ class Page < ApplicationRecord
     words_map = cache_page[:words_map]
     words_strings = words_map.keys
 
-    # Find db words
+    # Find db words that exist
     found_words = Word.where(value: words_strings).to_a
+    # Find words that don't exist yet in db
     missing_words_strings = words_strings - found_words.map(&:value)
 
 
@@ -110,32 +116,46 @@ class Page < ApplicationRecord
 
     @cache_words_map ||= begin
       if cached_words_map.empty? || force
-        Rails.logger.debug "Refreshing cached_words_map: #{self[:url_string]}"
 
-        words_map = {}
-        extracted_words = extract_words
+        if self[:words_map].present? && self[:words_map].is_a?(Hash)
+          Rails.logger.debug "Loading from record cached_words_map: #{self[:url_string]}"
 
-        return nil if extracted_words.empty?
+          words_map_hash = self[:words_map]
+          cached_words_map.bulk_set(words_map_hash)
 
-        extracted_words.each do |word|
-          words_map[word] ||= 0
-          words_map[word] += 1
+          return @cache_words_map = words_map_hash
+        else
+          Rails.logger.debug "Refreshing cached_words_map: #{self[:url_string]}"
         end
 
-        cached_words_map.bulk_set(words_map)
+        words_map_hash = {}
+        extracted_words = extract_words
 
-        cached_words_map.to_h
-      else
-        cached_words_map.to_h
+        return @cache_words_map = words_map_hash if extracted_words.empty?
+
+        extracted_words.each do |word|
+          words_map_hash[word] ||= 0
+          words_map_hash[word] += 1
+        end
+
+        self[:words_map] = words_map_hash
+        save
+
+        cached_words_map.bulk_set(words_map_hash)
       end
+
+      cached_words_map.to_h
     end
   end
 
   def extract_words
     @extract_words ||= begin
-      Rails.logger.debug "Refreshing extract_words: #{self[:url_string]}"
+      unless cached_extracted_words.nil?
+        return cached_extracted_words.value
+      end
+
       text = Html2Text.convert noko_doc.text
-      text.split /\s/
+      cached_extracted_words.value = text.split /\s/
     end
   end
 
@@ -145,7 +165,10 @@ class Page < ApplicationRecord
 
   # @return [Nokogiri::HTML::Document]
   def noko_doc
-    Nokogiri::HTML.parse(cache_body)
+    @noko_doc ||=  begin
+      Rails.logger.debug "Parsing noko_doc: #{self[:url_string]}"
+      Nokogiri::HTML.parse(cache_body)
+    end
   end
 
   # @return [Mechanize::Page]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_10_073556) do
+ActiveRecord::Schema.define(version: 2019_11_11_175714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,9 @@ ActiveRecord::Schema.define(version: 2019_11_10_073556) do
     t.bigint "host_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "links"
+    t.integer "word_count"
+    t.text "words_map"
     t.index ["host_id"], name: "index_pages_on_host_id"
     t.index ["url_string"], name: "index_pages_on_url_string", unique: true
   end

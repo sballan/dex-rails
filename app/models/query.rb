@@ -27,7 +27,8 @@ class Query < ApplicationRecord
 
     hit_set = Set.new
     pages.each do |page|
-      total_words_on_page = page.extract_words.count
+      total_words_on_page = page[:word_count]
+      total_words_on_page ||= page.extract_words.count
 
       words_in_query.each do |word_in_query|
         hit_set << {

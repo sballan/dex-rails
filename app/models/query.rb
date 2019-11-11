@@ -3,34 +3,34 @@ class Query < ApplicationRecord
 
   validates :value, presence: true
 
-  hash_key :recent_queries, marshal: true, compress: true, expireat: -> { Time.now + 10.seconds }
-
-  list :cached_hits, marshal: true, compress: true, expireat: -> { Time.now + 10.seconds }
+  value :cached_response, marshal: true, compress: true, expireat: -> { Time.now + 10.minute }
 
   # @return [Array<String>]
   def words_in_query
     value.split(/\s/)
   end
 
-  def cache_hits
-    if recent_queries.has? self[:value]
-      return
+  def response
+    unless cached_response.nil?
+      return cached_response.value
     end
 
-    response = self.execute
+    Rails.logger.debug "Response not cached, executing query: #{value}"
+
+    cached_response.value = res = execute
   end
 
 
   def execute
     words = Word.where(value: words_in_query)
-    pages = words.map(&:pages).flatten
+    pages = words.map(&:pages).flatten.uniq
 
-    hits = []
+    hit_set = Set.new
     pages.each do |page|
       total_words_on_page = page.extract_words.count
 
       words_in_query.each do |word_in_query|
-        hits << {
+        hit_set << {
           url_string: page.url_string,
           word: word_in_query,
           count: page.cache_words_map[word_in_query].to_i,
@@ -39,6 +39,6 @@ class Query < ApplicationRecord
       end
     end
 
-    hits.sort_by {|h| h[:count].to_f / h[:total_words_on_page].to_f}.reverse
+    hit_set.to_a.sort_by {|h| h[:count].to_f / h[:total_words_on_page].to_f}.reverse
   end
 end

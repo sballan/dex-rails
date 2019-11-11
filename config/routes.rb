@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resources :queries
   resources :hosts
+  resources :pages
 
   root 'queries#index'
 end

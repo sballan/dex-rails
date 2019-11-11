@@ -13,16 +13,29 @@ class Page < ApplicationRecord
 
   hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.hour }
 
+  before_validation do
+    uri = URI(self[:url_string])
+    self.host ||= Host.find_or_create_by host_url_string: "#{uri.scheme}://#{uri.host}"
+  end
+
   def crawl
+    links = cache_links
+    links.each {|link| Page.find_or_create_by url_string: link}
+
     words_map = cache_page[:words_map]
     words_strings = words_map.keys
-    word_objects = words_strings.map {|w| {value: w} }
 
-    words = word_objects.map do |word_object|
+    found_words = Word.where(value: words_strings).to_a
+    missing_words_strings = words_strings - found_words.map(&:value)
+
+    missing_words_objects = missing_words_strings.map {|w| {value: w} }
+    created_words = missing_words_objects.map do |word_object|
       Word.find_or_create_by word_object
     end
 
-    page_words = words.map do |word|
+    found_words = found_words.concat(created_words)
+
+    page_words = found_words.map do |word|
       PageWord.find_or_create_by word: word, page: self
     end
 

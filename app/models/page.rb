@@ -111,6 +111,17 @@ class Page < ApplicationRecord
     end
   end
 
+  def cache_word_count
+    @cache_word_count ||= begin
+      Rails.logger.debug "Refreshing cached_word_count: #{self[:url_string]}"
+
+
+      cached_links.clear
+      cached_links.merge links
+      cached_links.to_a
+    end
+  end
+
   def cache_words_map(force = false)
     @cache_words_map = nil if force
 
@@ -159,16 +170,16 @@ class Page < ApplicationRecord
     end
   end
 
-  def mechanize_page
-    @mechanize_page ||= fetch_mechanize_page
-  end
-
   # @return [Nokogiri::HTML::Document]
   def noko_doc
     @noko_doc ||=  begin
       Rails.logger.debug "Parsing noko_doc: #{self[:url_string]}"
       Nokogiri::HTML.parse(cache_body)
     end
+  end
+
+  def mechanize_page
+    @mechanize_page ||= fetch_mechanize_page
   end
 
   # @return [Mechanize::Page]

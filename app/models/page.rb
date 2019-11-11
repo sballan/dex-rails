@@ -1,4 +1,6 @@
 class Page < ApplicationRecord
+  class BadCrawl < StandardError; end
+
   include Redis::Objects
 
   belongs_to :host
@@ -151,7 +153,7 @@ class Page < ApplicationRecord
     end
 
     unless self.host.allowed?(self[:url_string])
-      raise "Now allowed to crawl this page: #{self[:url_string]}"
+      raise BadCrawl.new "Now allowed to crawl this page: #{self[:url_string]}"
     end
 
     Rails.logger.debug "\n\nFetching page: #{self[:url_string]}\n"

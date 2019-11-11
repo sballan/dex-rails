@@ -1,6 +1,8 @@
 
 class CrawlHostJob < ApplicationJob
+
   queue_as :crawling
+  discard_on Page::BadCrawl
 
   def perform(url_string)
     uri = URI(url_string)

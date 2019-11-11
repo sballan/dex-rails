@@ -10,11 +10,11 @@ class Page < ApplicationRecord
 
   validates :url_string, presence: true, uniqueness: true
 
-  value :cached_body, marshal: true, compress: true, expireat: -> { Time.now + 1.day }
-  value :cached_title, expireat: -> { Time.now + 1.day }
-  set   :cached_links, expireat: -> { Time.now + 1.day }
+  value :cached_body, marshal: true, compress: true, expireat: -> { Time.now + 1.hour }
+  value :cached_title, expireat: -> { Time.now + 1.minute }
+  set   :cached_links, expireat: -> { Time.now + 1.minute }
 
-  hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.day }
+  hash_key :cached_words_map, compress: true, expireat: -> { Time.now + 1.minute }
 
   before_validation do
     uri = URI(self[:url_string])

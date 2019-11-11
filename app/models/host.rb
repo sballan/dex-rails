@@ -6,8 +6,8 @@ class Host < ApplicationRecord
   validates :limit_time, presence: true
   validates :host_url_string, presence: true, uniqueness: true
 
-  value :crawl_started_at, marshal: true, expireat: -> { Time.now + 1.hour }
-  counter :crawls_since_started, expireat: -> { Time.now + 1.hour }
+  value :crawl_started_at, marshal: true, expireat: -> { Time.now + 1.day }
+  counter :crawls_since_started, expireat: -> { Time.now + 1.day }
 
   set :urls_to_fetch
   set :urls_fetched

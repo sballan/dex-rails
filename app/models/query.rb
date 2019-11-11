@@ -3,7 +3,7 @@ class Query < ApplicationRecord
 
   validates :value, presence: true
 
-  value :cached_response, marshal: true, compress: true, expireat: -> { Time.now + 10.minute }
+  value :cached_response, marshal: true, compress: true, expireat: -> { Time.now + 1.hour }
 
   # @return [Array<String>]
   def words_in_query

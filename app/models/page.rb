@@ -25,11 +25,14 @@ class Page < ApplicationRecord
     links = cache_links
     links.each {|link| Page.find_or_create_by url_string: link}
 
+    # Get words on this page
     words_map = cache_page[:words_map]
     words_strings = words_map.keys
 
+    # Find db words
     found_words = Word.where(value: words_strings).to_a
     missing_words_strings = words_strings - found_words.map(&:value)
+
 
     missing_words_objects = missing_words_strings.map {|w| {value: w} }
     created_words = missing_words_objects.map do |word_object|
@@ -46,6 +49,8 @@ class Page < ApplicationRecord
       page_word[:page_count] = words_map[page_word.word.value].to_i
       page_word.save
     end
+
+    GC.start(full_mark: true, immediate_sweep: true)
   end
 
   def cache_page(force = false)

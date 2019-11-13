@@ -22,8 +22,11 @@ class Query < ApplicationRecord
 
 
   def execute
+    # Only query for words we've seen before
     words = Word.where(value: words_in_query)
-    pages = words.map(&:pages).flatten.uniq
+
+    # Get all pages for all words
+    pages = words.map(&:cache_db_pages).flatten.uniq
 
     hit_set = Set.new
     pages.each do |page|

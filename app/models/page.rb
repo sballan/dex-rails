@@ -55,8 +55,8 @@ class Page < ApplicationRecord
     @extracted_words_map ||= begin
       {}.tap do |map|
         cache_page_content[:extracted_words].each do |extracted_word|
-          map[:extracted_word] ||= 0
-          map[:extracted_word] += 1
+          map[extracted_word] ||= 0
+          map[extracted_word] += 1
         end
       end
     end

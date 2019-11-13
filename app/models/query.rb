@@ -31,15 +31,14 @@ class Query < ApplicationRecord
     hit_set = Set.new
     pages.each do |page|
       total_words_on_page = page[:word_count]
-      total_words_on_page ||= page.extract_words.count
+      total_words_on_page ||= page.cache_page_content[:extracted_words].count
 
-      extracted_words = page.cache_page_content[:extracted_words]
 
       words_in_query.each do |word_in_query|
         hit_set << {
           url_string: page.url_string,
           word: word_in_query,
-          count: extracted_words[word_in_query].to_i,
+          count: page.extracted_words_map[word_in_query],
           total_words_on_page: total_words_on_page
         }
       end

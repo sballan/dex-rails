@@ -65,14 +65,14 @@ class Page < ApplicationRecord
   def cache_db_words
     Rails.cache.fetch("#{cache_key_with_version}/db_words") do
       Rails.logger.debug "Cache miss db_words: #{self[:url_string]}"
-      self.words
+      self.words.to_a
     end
   end
 
   def cache_db_page_words
     Rails.cache.fetch("#{cache_key_with_version}/db_page_words") do
       Rails.logger.debug "Cache miss db_page_words: #{self[:url_string]}"
-      self.page_words
+      self.page_words.to_a
     end
   end
 

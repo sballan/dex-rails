@@ -2,8 +2,10 @@ development:
   adapter: postgresql
   encoding: unicode
   database: dex-rails-development
-  pool: 150
+  pool: 25
   timeout: 5000
+  prepared_statements: false
+  advisory_locks: false
 
 # test:
 #   <<: *default
@@ -15,5 +17,7 @@ production:
   url: <%= ENV['DATABASE_URL'] %>
   pool: 150
   timeout: 5000
+  prepared_statements: false
+  advisory_locks: false
 
 

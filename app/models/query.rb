@@ -30,8 +30,11 @@ class Query < ApplicationRecord
 
     hit_set = Set.new
     pages.each do |page|
+      next if page.cache_db_content.blank?
+      next if page.cache_db_content['extracted_words'].blank?
+
       total_words_on_page = page[:word_count]
-      total_words_on_page ||= page.cache_page_content[:extracted_words].count
+      total_words_on_page ||= page.cache_db_content['extracted_words'].count
 
 
       words_in_query.each do |word_in_query|

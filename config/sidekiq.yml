@@ -1,6 +1,6 @@
 :concurrency: <%= ENV.fetch("SIDEKIQ_CONCURRENCY") { 3 } %>
 :queues:
   - [critical, 64]
-  - [persisting, 16]
   - [crawling, 8]
+  - [persisting, 4]
   - [retry_crawling, 1]

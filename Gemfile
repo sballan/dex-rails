@@ -24,6 +24,7 @@ gem 'dotenv-rails'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'foreman'
 gem "barnes"
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'rubocop-rails'

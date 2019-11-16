@@ -1,4 +1,4 @@
-:concurrency: <%= ENV.fetch("SIDEKIQ_CONCURRENCY") { 3 } %>
+:concurrency: <%= ENV['RAILS_MAX_THREADS'] || 5 %>
 :queues:
   - [critical, 1024]
   - [crawling, 512]

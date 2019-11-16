@@ -3,5 +3,5 @@
   - [critical, 1024]
   - [persisting, 512]
   - [retry_persisting, 128]
-  - [crawling, 2]
+  - [crawling, 8]
   - [retry_crawling, 1]

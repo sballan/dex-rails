@@ -5,7 +5,7 @@ class CrawlHostJob < ApplicationJob
   discard_on Page::BadCrawl
 
   rescue_from(Page::LimitReached) do
-    retry_job queue: :retry_crawling, wait: Random.rand(1..10)
+    retry_job queue: :retry_crawling, wait: Random.rand(10..30)
   end
 
 

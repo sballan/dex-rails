@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   encoding: unicode
   database: dex-rails-development
-  pool: 25
+  pool: 500
   timeout: 5000
   prepared_statements: false
   advisory_locks: false

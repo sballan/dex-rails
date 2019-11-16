@@ -22,12 +22,17 @@ class Page < ApplicationRecord
   def crawl
     GC.start(full_mark: true, immediate_sweep: true)
 
-    if self[:content].blank?
-      persist_page_content
+    unless crawl_allowed?
+      Rails.logger.info "Skipping crawl for #{self[:url_string]}"
+      return
     end
 
+    persist_page_content
+
     if cache_db_content['links'].present?
-      CreatePagesForUrlsJob.perform_later cache_db_content['links']
+      cache_db_content['links'].each_slice(20) do |links|
+        CreatePagesForUrlsJob.perform_later links
+      end
     end
 
     # Get words on this page
@@ -56,6 +61,35 @@ class Page < ApplicationRecord
     end
 
     GC.start(full_mark: false, immediate_sweep: false)
+  end
+
+  def crawl_allowed?
+    allowed = true
+
+    allowed = false unless self.host.allowed?(self[:url_string])
+    allowed = false if self.host.rate_limit_reached?
+
+    last_success = self[:download_success] || 0
+    last_failure = self[:download_failure] || 0
+    last_invalid = self[:download_invalid] || 0
+
+    if Time.now < last_success + host.success_retry_seconds
+      Rails.logger.info "Crawl not allowed, success too recent: #{self[:url_string]}"
+      allowed = false
+    end
+
+    if Time.now < last_failure + host.failure_retry_seconds
+      Rails.logger.info "Crawl not allowed, failure too recent: #{self[:url_string]}"
+      allowed = false
+    end
+
+
+    if Time.now < last_invalid + host.invalid_retry_seconds
+      Rails.logger.info "Crawl not allowed, invalid too recent: #{self[:url_string]}"
+      allowed = false
+    end
+
+    allowed
   end
 
   def extracted_words_map
@@ -91,8 +125,10 @@ class Page < ApplicationRecord
   end
 
   def persist_page_content
-    self[:content] ||= mechanize_page_content
+    self[:content] = mechanize_page_content
+    self[:download_success] = Time.now.utc
     save!
+
     Rails.logger.debug "Successfully persisted #{self[:url_string]}"
     self
   end
@@ -128,14 +164,20 @@ class Page < ApplicationRecord
       Rails.logger.debug "Fetching mechanize_page: #{self[:url_string]}"
 
       if self.host.rate_limit_reached?
+        self[:download_failure] = Time.now.utc
+        save
         raise LimitReached.new "Rate limit reached, skipping #{self[:url_string]}"
       end
 
       unless self.host.found?
-        raise "Cannot find this host: #{self.host.host_url_string}"
+        self[:download_invalid] = Time.now.utc
+        save
+        raise BadCrawl.new "Cannot find this host: #{self.host.host_url_string}"
       end
 
       unless self.host.allowed?(self[:url_string])
+        self[:download_invalid] = Time.now.utc
+        save
         raise BadCrawl.new "Now allowed to crawl this page: #{self[:url_string]}"
       end
 
@@ -146,6 +188,8 @@ class Page < ApplicationRecord
       self.host.increment_crawls
 
       @mechanize_page = agent.get(self[:url_string])
+      self[:download_invalid] = Time.now.utc
+      save
       raise BadCrawl.new 'Only html pages are supported' unless @mechanize_page.is_a?(Mechanize::Page)
 
       @mechanize_page
@@ -153,6 +197,7 @@ class Page < ApplicationRecord
 
   rescue Mechanize::ResponseCodeError => e
     Rails.logger.error e.message
+    save
     raise BadCrawl.new "Couldn't reach this page"
   end
 

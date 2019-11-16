@@ -6,6 +6,10 @@ class Host < ApplicationRecord
   validates :limit_time, presence: true
   validates :host_url_string, presence: true, uniqueness: true
 
+  validates :success_retry_seconds, presence: true
+  validates :failure_retry_seconds, presence: true
+  validates :invalid_retry_seconds, presence: true
+
   value :crawl_started_at, marshal: true, expireat: -> { Time.now + 1.day }
   counter :crawls_since_started, expireat: -> { Time.now + 1.day }
 
@@ -48,7 +52,7 @@ class Host < ApplicationRecord
   end
 
   def allowed?(url_string)
-    if robotstxt_parser.allowed?(url_string)
+    if found? && robotstxt_parser.allowed?(url_string)
       Rails.logger.debug "Url allowed: #{url_string}"
       true
     else

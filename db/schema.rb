@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_15_045722) do
+ActiveRecord::Schema.define(version: 2019_11_16_063030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,9 @@ ActiveRecord::Schema.define(version: 2019_11_15_045722) do
     t.integer "limit_time", default: 5
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "failure_retry_seconds", default: 3600
+    t.integer "invalid_retry_seconds", default: 604800
+    t.integer "success_retry_seconds", default: 86400
     t.index ["host_url_string"], name: "index_hosts_on_host_url_string", unique: true
   end
 
@@ -42,6 +45,9 @@ ActiveRecord::Schema.define(version: 2019_11_15_045722) do
     t.integer "word_count"
     t.text "words_map"
     t.text "content"
+    t.datetime "download_success"
+    t.datetime "download_failure"
+    t.datetime "download_invalid"
     t.index ["host_id"], name: "index_pages_on_host_id"
     t.index ["url_string"], name: "index_pages_on_url_string", unique: true
   end

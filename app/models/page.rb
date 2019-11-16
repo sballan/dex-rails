@@ -22,7 +22,7 @@ class Page < ApplicationRecord
   def crawl
     GC.start(full_mark: true, immediate_sweep: true)
 
-    unless crawl_allowed?
+    unless cache_crawl_allowed?
       Rails.logger.info "Skipping crawl for #{self[:url_string]}"
       return
     end
@@ -61,6 +61,12 @@ class Page < ApplicationRecord
     end
 
     GC.start(full_mark: false, immediate_sweep: false)
+  end
+
+  def cache_crawl_allowed?
+    Rails.cache.fetch("#{cache_key_with_version}/crawl_allowed?") do
+      crawl_allowed?
+    end
   end
 
   def crawl_allowed?

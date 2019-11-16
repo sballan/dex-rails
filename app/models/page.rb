@@ -20,8 +20,6 @@ class Page < ApplicationRecord
   end
 
   def crawl
-    GC.start(full_mark: true, immediate_sweep: true)
-
     unless cache_crawl_allowed?
       Rails.logger.info "Skipping crawl for #{self[:url_string]}"
       return
@@ -59,8 +57,6 @@ class Page < ApplicationRecord
       page_word[:page_count] = extracted_words_map[page_word.word.value]
       page_word.save
     end
-
-    GC.start(full_mark: false, immediate_sweep: false)
   end
 
   def cache_crawl_allowed?

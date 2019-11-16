@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   encoding: unicode
   database: dex-rails-development
-  pool: 1000
+  pool: ENV['RAILS_MAX_THREADS']
   timeout: 5000
   prepared_statements: false
   advisory_locks: false
@@ -15,7 +15,7 @@ production:
   adapter: postgresql
   encoding: unicode
   url: <%= ENV['DATABASE_URL'] %>
-  pool: 150
+  pool: ENV['RAILS_MAX_THREADS']
   timeout: 5000
   prepared_statements: false
   advisory_locks: false

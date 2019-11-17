@@ -76,19 +76,25 @@ class Page < ApplicationRecord
     last_invalid = self[:download_invalid] || 0
 
     if Time.now < last_success + host.success_retry_seconds
-      Rails.logger.info "Crawl not allowed, success too recent: #{self[:url_string]}"
+      Rails.logger.info "Crawl not allowed, success too recent: #{self[:download_success]}"
       allowed = false
+    else
+      Rails.logger.debug "Crawl allowed, last success: #{last_success}"
     end
 
     if Time.now < last_failure + host.failure_retry_seconds
-      Rails.logger.info "Crawl not allowed, failure too recent: #{self[:url_string]}"
+      Rails.logger.info "Crawl not allowed, failure too recent: #{self[:download_failure]}"
       allowed = false
+    else
+      Rails.logger.debug "Crawl allowed, last failure: #{last_failure}"
     end
 
 
     if Time.now < last_invalid + host.invalid_retry_seconds
-      Rails.logger.info "Crawl not allowed, invalid too recent: #{self[:url_string]}"
+      Rails.logger.info "Crawl not allowed, invalid too recent: #{self[:download_invalid]}"
       allowed = false
+    else
+      Rails.logger.debug "Crawl allowed, last invalid: #{last_invalid}"
     end
 
     allowed
@@ -199,6 +205,7 @@ class Page < ApplicationRecord
 
   rescue Mechanize::ResponseCodeError => e
     Rails.logger.error e.message
+    self[:download_failure] = Time.now.utc
     save
     raise BadCrawl.new "Couldn't reach this page"
   end

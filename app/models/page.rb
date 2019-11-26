@@ -7,12 +7,13 @@ class Page < ApplicationRecord
   belongs_to :host
   has_many :page_words, dependent: :destroy
   has_many :words, through: :page_words
+  has_many :page_crawl_batches
 
   serialize :links, JSON
   serialize :content, JSON
   serialize :words_map, JSON
 
-  validates :url_string, presence: true, uniqueness: true
+  validates :url_string, presence: true
 
   before_validation do
     uri = URI(self[:url_string])
@@ -59,6 +60,20 @@ class Page < ApplicationRecord
     end
   end
 
+  def persist_page_content
+    self[:content] = mechanize_page_content
+    self[:links] = mechanize_page_content[:links]
+    self[:download_success] = Time.now.utc
+    save!
+
+    Rails.logger.debug "Successfully persisted #{self[:url_string]}"
+    self
+  end
+
+  def page_content_persisted?
+    cache_db_content.present?
+  end
+
   def cache_crawl_allowed?
     Rails.cache.fetch("#{cache_key_with_version}/crawl_allowed?") do
       crawl_allowed?
@@ -68,33 +83,46 @@ class Page < ApplicationRecord
   def crawl_allowed?
     allowed = true
 
-    allowed = false unless self.host.allowed?(self[:url_string])
-    allowed = false if self.host.rate_limit_reached?
+    if self.host.allowed?(self[:url_string])
+      Rails.logger.debug "SUCCESS: Crawl allowed for host: #{self.host[:host_url_string]}"
+    else
+      Rails.logger.info "FAIL: Crawl not allowed, for host: #{self.host[:host_url_string]}"
+      allowed = false
+    end
+
+
+    if self.host.rate_limit_reached?
+      Rails.logger.info "Rate limit reached for host: #{self.host[:host_url_string]}"
+      allowed = false
+    else
+      Rails.logger.debug "SUCCESS: Rate limit not reached for host: #{self.host[:host_url_string]}"
+    end
+
 
     last_success = self[:download_success] || 0
     last_failure = self[:download_failure] || 0
     last_invalid = self[:download_invalid] || 0
 
     if Time.now < last_success + host.success_retry_seconds
-      Rails.logger.info "Crawl not allowed, success too recent: #{self[:download_success]}"
+      Rails.logger.info "FAIL: Crawl not allowed, success too recent: #{self[:download_success]}"
       allowed = false
     else
-      Rails.logger.debug "Crawl allowed, last success: #{last_success}"
+      Rails.logger.debug "SUCCESS: Crawl allowed, last success: #{last_success}"
     end
 
     if Time.now < last_failure + host.failure_retry_seconds
-      Rails.logger.info "Crawl not allowed, failure too recent: #{self[:download_failure]}"
+      Rails.logger.info "FAIL: Crawl not allowed, failure too recent: #{self[:download_failure]}"
       allowed = false
     else
-      Rails.logger.debug "Crawl allowed, last failure: #{last_failure}"
+      Rails.logger.debug "SUCCESS: Crawl allowed, last failure: #{last_failure}"
     end
 
 
     if Time.now < last_invalid + host.invalid_retry_seconds
-      Rails.logger.info "Crawl not allowed, invalid too recent: #{self[:download_invalid]}"
+      Rails.logger.info "FAIL: Crawl not allowed, invalid too recent: #{self[:download_invalid]}"
       allowed = false
     else
-      Rails.logger.debug "Crawl allowed, last invalid: #{last_invalid}"
+      Rails.logger.debug "SUCCESS: Crawl allowed, last invalid: #{last_invalid}"
     end
 
     allowed
@@ -125,20 +153,18 @@ class Page < ApplicationRecord
     end
   end
 
+  def cache_db_links
+    Rails.cache.fetch("#{cache_key_with_version}/db_page_links") do
+      Rails.logger.debug "Cache miss page_content: #{self[:url_string]}"
+      self.links
+    end
+  end
+
   def cache_db_content
     Rails.cache.fetch("#{cache_key_with_version}/db_page_content") do
       Rails.logger.debug "Cache miss page_content: #{self[:url_string]}"
       self.content
     end
-  end
-
-  def persist_page_content
-    self[:content] = mechanize_page_content
-    self[:download_success] = Time.now.utc
-    save!
-
-    Rails.logger.debug "Successfully persisted #{self[:url_string]}"
-    self
   end
 
   def mechanize_page_content
@@ -196,8 +222,7 @@ class Page < ApplicationRecord
       self.host.increment_crawls
 
       @mechanize_page = agent.get(self[:url_string])
-      self[:download_invalid] = Time.now.utc
-      save
+
       raise BadCrawl.new 'Only html pages are supported' unless @mechanize_page.is_a?(Mechanize::Page)
 
       @mechanize_page

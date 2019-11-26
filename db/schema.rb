@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_16_063030) do
+ActiveRecord::Schema.define(version: 2019_11_18_033336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2019_11_16_063030) do
     t.integer "page_count"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["page_id", "word_id"], name: "index_page_words_on_page_id_and_word_id", unique: true
     t.index ["page_id"], name: "index_page_words_on_page_id"
     t.index ["word_id"], name: "index_page_words_on_word_id"
   end
@@ -48,6 +49,9 @@ ActiveRecord::Schema.define(version: 2019_11_16_063030) do
     t.datetime "download_success"
     t.datetime "download_failure"
     t.datetime "download_invalid"
+    t.datetime "persist_success"
+    t.datetime "persist_failure"
+    t.datetime "persist_invalid"
     t.index ["host_id"], name: "index_pages_on_host_id"
     t.index ["url_string"], name: "index_pages_on_url_string", unique: true
   end

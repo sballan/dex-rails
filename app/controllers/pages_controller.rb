@@ -29,13 +29,9 @@ class PagesController < ApplicationController
   # POST /pages.json
   def create
     @page = Page.new(page_params)
+    @page.save
 
-    uri = URI(@page.url_string)
-
-    host = Host.find_or_create_by(host_url_string: "#{uri.scheme}://#{uri.host}")
-    @page.host = host
-
-    CrawlHostJob.perform_later @page.url_string
+    PageJob::Crawl.perform_later @page.id
 
     respond_to do |format|
       if @page.save

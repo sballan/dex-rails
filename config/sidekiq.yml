@@ -1,7 +1,9 @@
 :concurrency: <%= ENV['RAILS_MAX_THREADS'] || 5 %>
 :queues:
   - [critical, 1024]
-  - [persisting, 512]
-  - [retry_persisting, 128]
-  - [crawling, 8]
-  - [retry_crawling, 1]
+  - [crawling, 512]
+  - [retry_crawling, 256]
+  - [downloading, 64]
+  - [retry_downloading, 32]
+  - [persisting, 4]
+  - [retry_persisting, 2]

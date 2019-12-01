@@ -1,52 +1,45 @@
+# frozen_string_literal: true
+
 class Query < ApplicationRecord
-  include Redis::Objects
-
   validates :value, presence: true
-
-  value :cached_response, marshal: true, compress: true, expireat: -> { Time.now + 1.minute }
 
   # @return [Array<String>]
   def words_in_query
     value.split(/\s/)
   end
 
-  def response
-    unless cached_response.nil?
-      return cached_response.value
-    end
-
-    Rails.logger.debug "Response not cached, executing query: #{value}"
-
-    cached_response.value = res = execute
-  end
-
-
   def execute
     # Only query for words we've seen before
     words = Word.where(value: words_in_query)
+    cached_words = words.map { |word| Cached::Word.new word }
 
     # Get all pages for all words
-    pages = words.map(&:cache_db_pages).flatten.uniq
+    pages = cached_words.map(&:pages).flatten.uniq
+    cached_pages = pages.map { |page| Cached::Page.new page }
 
     hit_set = Set.new
-    pages.each do |page|
-      next if page.cache_db_content.blank?
-      next if page.cache_db_content['extracted_words'].blank?
+    cached_pages.each do |cached_page|
+      next if cached_page.content.blank?
+      next if cached_page.content['extracted_words'].blank?
 
-      total_words_on_page = page[:word_count]
-      total_words_on_page ||= page.cache_db_content['extracted_words'].count
+      total_words_on_page = cached_page.page[:word_count]
+      total_words_on_page ||= cached_page.content['extracted_words'].count
 
 
-      words_in_query.each do |word_in_query|
+      words.each do |word|
+        page_word = cached_page.page_words.find do |pw|
+          pw.word_id == word.id
+        end
+
         hit_set << {
-          url_string: page.url_string,
-          word: word_in_query,
-          count: page.extracted_words_map[word_in_query],
+          url_string: cached_page.page.url_string,
+          word: word.value,
+          count: page_word.page_count,
           total_words_on_page: total_words_on_page
         }
       end
     end
 
-    hit_set.to_a.sort_by {|h| h[:count].to_f / h[:total_words_on_page].to_f}.reverse
+    hit_set.to_a.sort_by { |h| h[:count].to_f / h[:total_words_on_page].to_f }.reverse
   end
 end

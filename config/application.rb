@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require 'rails/all'
@@ -14,9 +16,14 @@ module DexRails
     config.eager_load_paths << Rails.root.join('lib')
     config.autoload_paths << Rails.root.join('lib')
 
-
-    redis_connected = !!Sidekiq.redis(&:info) rescue false
-    raise 'No redis connection, run `bundle exec sidekiq`' unless redis_connected
+    redis_connected = begin
+                        !!Sidekiq.redis(&:info)
+                      rescue StandardError
+                        false
+                      end
+    unless redis_connected
+      raise 'No redis connection, run `bundle exec sidekiq`'
+    end
 
     # config.active_job.queue_adapter = :sidekiq
     config.active_job.queue_adapter = ENV.fetch('QUEUE_ADAPTER', 'sidekiq')

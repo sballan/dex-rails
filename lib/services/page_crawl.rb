@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Services
   module PageCrawl
-
-    extend self
+    module_function
 
     # @param [Page] page
     def crawl(page)
@@ -31,8 +32,7 @@ module Services
       # Find words that don't exist yet in db
       missing_words_strings = words_strings - found_words.map(&:value)
 
-
-      missing_words_objects = missing_words_strings.map {|w| {value: w} }
+      missing_words_objects = missing_words_strings.map { |w| { value: w } }
       created_words = missing_words_objects.map do |word_object|
         Word.create_or_find_by word_object
       end
@@ -79,7 +79,6 @@ module Services
         Rails.logger.debug "Crawl allowed, last failure: #{last_failure}"
       end
 
-
       if Time.now < last_invalid + page.host.invalid_retry_seconds
         Rails.logger.info "Crawl not allowed, invalid too recent: #{page[:download_invalid]}"
         allowed = false
@@ -117,17 +116,19 @@ module Services
       Rails.logger.debug "Fetching mechanize_page_content: #{page[:url_string]}"
 
       mechanize_page = create_mechanize_page(page)
-      noko_doc =  Nokogiri::HTML.parse(mechanize_page.body)
-      noko_doc.xpath("//script").remove
+      noko_doc = Nokogiri::HTML.parse(mechanize_page.body)
+      noko_doc.xpath('//script').remove
 
       extracted_words = extract_words(noko_doc.text)
 
       {
         title: mechanize_page.title,
         body: mechanize_page.body.force_encoding('ISO-8859-1'),
-        links: (mechanize_page.links.map do |mechanize_link|
-          mechanize_link.resolved_uri.to_s rescue nil
-        end.compact),
+        links: mechanize_page.links.map do |mechanize_link|
+          mechanize_link.resolved_uri.to_s
+               rescue StandardError
+                 nil
+        end.compact,
         extracted_words: extracted_words
       }
     end
@@ -138,19 +139,19 @@ module Services
       if page.host.rate_limit_reached?
         page[:download_failure] = Time.now.utc
         page.save
-        raise Page::LimitReached.new "Rate limit reached, skipping #{page[:url_string]}"
+        raise Page::LimitReached, "Rate limit reached, skipping #{page[:url_string]}"
       end
 
       unless page.host.found?
         page[:download_invalid] = Time.now.utc
         page.save
-        raise Page::BadCrawl.new "Cannot find this host: #{page.host.host_url_string}"
+        raise Page::BadCrawl, "Cannot find this host: #{page.host.host_url_string}"
       end
 
       unless page.host.allowed?(page[:url_string])
         page[:download_invalid] = Time.now.utc
         page.save
-        raise Page::BadCrawl.new "Now allowed to crawl this page: #{page[:url_string]}"
+        raise Page::BadCrawl, "Now allowed to crawl this page: #{page[:url_string]}"
       end
 
       Rails.logger.debug "\n\nFetching page: #{page[:url_string]}\n"
@@ -162,15 +163,16 @@ module Services
       @mechanize_page = agent.get(page[:url_string])
       page[:download_invalid] = Time.now.utc
       page.save
-      raise Page::BadCrawl.new 'Only html pages are supported' unless @mechanize_page.is_a?(Mechanize::Page)
+      unless @mechanize_page.is_a?(Mechanize::Page)
+        raise Page::BadCrawl, 'Only html pages are supported'
+      end
 
       @mechanize_page
-
     rescue Mechanize::ResponseCodeError => e
       Rails.logger.error e.message
       page[:download_failure] = Time.now.utc
       page.save
-      raise Page::BadCrawl.new "Couldn't reach this page"
+      raise Page::BadCrawl, "Couldn't reach this page"
     end
   end
 end

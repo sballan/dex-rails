@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Services
   module Cache
-    extend self
+    module_function
 
     # @param [String] key
-    def delete(key)
+    def delete(_key)
       Rails.cache.delete
     end
 

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class HostsController < ApplicationController
-  before_action :set_host, only: [:show, :edit, :update, :destroy]
+  before_action :set_host, only: %i[show edit update destroy]
 
   # GET /hosts
   # GET /hosts.json
@@ -22,8 +24,7 @@ class HostsController < ApplicationController
   end
 
   # GET /hosts/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /hosts
   # POST /hosts.json
@@ -66,13 +67,14 @@ class HostsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_host
-      @host = Host.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def host_params
-      params.require(:host).permit(:host_url_string)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_host
+    @host = Host.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def host_params
+    params.require(:host).permit(:host_url_string)
+  end
 end

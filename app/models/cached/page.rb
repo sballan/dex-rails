@@ -1,37 +1,52 @@
+# frozen_string_literal: true
+
 module Cached
   class Page
-
     attr_reader :page
 
-    # @param [::Page]
+    # @param [Page] page
     def initialize(page)
       @page = page
     end
 
+    def key
+      @page.cache_key
+    end
+
+    def version_key
+      @page.cache_key_with_version
+    end
+
     def words
-      @words ||= begin
-        Services::Cache.fetch("#{@page.cache_key_with_version}/words") do
-          Rails.logger.debug "Cache miss page.words: #{@page[:url_string]}"
-          page.words.to_a
-        end
+      return @words if @words.present?
+
+      Cached.log_memory_miss(name: 'Page', message: "missed 'words'")
+
+      @words = Services::Cache.fetch("#{version_key}/words", expire_time: 1.hour) do
+        Cached.log_store_miss(name: 'Page', message: "missed 'words'")
+        @page.words.to_a
       end
     end
 
     def page_words
-      @page_words ||= begin
-        Services::Cache.fetch("#{@page.cache_key_with_version}/page_words") do
-          Rails.logger.debug "Cache miss page.page_words: #{@page[:url_string]}"
-          @page.page_words.to_a
-        end
+      return @page_words if @page_words.present?
+
+      Cached.log_memory_miss(name: 'Page', message: "missed 'page_words'")
+
+      @page_words = Services::Cache.fetch("#{version_key}/page_words", expire_time: 1.hour) do
+        Cached.log_store_miss(name: 'Page', message: "missed 'page_words'")
+        @page.page_words.to_a
       end
     end
 
     def content
-      @content ||= begin
-        Services::Cache.fetch("#{@page.cache_key_with_version}/content") do
-          Rails.logger.debug "Cache miss page_content: #{@page[:url_string]}"
-          @page.content
-        end
+      return @content if @content.present?
+
+      Cached.log_memory_miss(name: 'Page', message: "missed 'content'")
+
+      @content = Services::Cache.fetch("#{version_key}/content", expire_time: 1.hour) do
+        Cached.log_store_miss(name: 'Page', message: "missed 'content'")
+        @page.content
       end
     end
   end

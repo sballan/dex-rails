@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 class CrawlHostJob < ApplicationJob
   queue_as :crawling
@@ -7,7 +8,6 @@ class CrawlHostJob < ApplicationJob
   rescue_from(Page::LimitReached) do
     retry_job queue: :retry_crawling, wait: Random.rand(10..30)
   end
-
 
   def perform(url_string)
     uri = URI(url_string)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Page < ApplicationRecord
   class BadCrawl < StandardError; end
   class LimitReached < StandardError; end

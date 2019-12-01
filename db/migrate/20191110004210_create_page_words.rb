@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePageWords < ActiveRecord::Migration[6.0]
   def change
     create_table :page_words do |t|

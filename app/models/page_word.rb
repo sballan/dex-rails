@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PageWord < ApplicationRecord
   include Redis::Objects
 
@@ -9,7 +11,7 @@ class PageWord < ApplicationRecord
   def cache_db_page_word_count
     Rails.cache.fetch("#{cache_key_with_version}/page_word_count") do
       Rails.logger.debug "Cache miss page_word_count: #{self[:url_string]}"
-      self.page[:word_count]
+      page[:word_count]
     end
   end
 end

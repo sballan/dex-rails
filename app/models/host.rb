@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Host < ApplicationRecord
   include Redis::Objects
 
@@ -17,11 +19,9 @@ class Host < ApplicationRecord
   set :urls_fetched
 
   def crawl
-    if crawl_started_at.nil?
-      crawl_started_at.value = Time.zone.now
-    end
+    crawl_started_at.value = Time.zone.now if crawl_started_at.nil?
 
-    url_strings = self.pages.map(&:url_string)
+    url_strings = pages.map(&:url_string)
 
     url_strings.each do |url_string|
       CrawlHostJob.perform_later url_string
@@ -68,5 +68,4 @@ class Host < ApplicationRecord
     end
     @robotstxt_parser
   end
-
 end

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class QueriesController < ApplicationController
-  before_action :set_query, only: [:show, :edit, :update, :destroy]
+  before_action :set_query, only: %i[show edit update destroy]
 
   def index
     @query = Query.new
@@ -18,8 +20,7 @@ class QueriesController < ApplicationController
   end
 
   # GET /queries/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /queries
   # POST /queries.json
@@ -62,13 +63,14 @@ class QueriesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_query
-      @query = Query.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def query_params
-      params.require(:query).permit(:value)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_query
+    @query = Query.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def query_params
+    params.require(:query).permit(:value)
+  end
 end

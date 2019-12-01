@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Word < ApplicationRecord
   include Redis::Objects
 
@@ -8,16 +10,15 @@ class Word < ApplicationRecord
 
   def cache_db_pages
     Rails.cache.fetch("#{cache_key_with_version}/db_pages") do
-      self.pages
+      pages
     end
   end
 
   def cache_page_db_words
     Rails.cache.fetch("#{cache_key_with_version}/page_db_words") do
-      self.page_words
+      page_words
     end
   end
 
   # serialize :freq_map, JSON
-
 end

@@ -18,7 +18,7 @@ class CrawlHostJob < ApplicationJob
     host.pages << page unless host.pages.include? page
     host.save!
 
-    page.crawl
+    Services::PageCrawl.crawl(page)
     GC.start(full_mark: true, immediate_sweep: true)
   end
 end

@@ -8,7 +8,7 @@ class CreatePagesForUrlsJob < ApplicationJob
   def perform(urls)
     urls.map do |url_string|
       page = Page.find_or_create_by url_string: url_string
-      page.persist_page_content if page.cache_crawl_allowed?
+      Services::PageCrawl.persist_page_content(page) if Services::PageCrawl.cache_crawl_allowed?(page)
     end
 
     GC.start(full_mark: false, immediate_sweep: false)

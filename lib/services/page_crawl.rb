@@ -12,14 +12,19 @@ module Services
 
       persist_page_content(page)
 
-      if cache_db_content(page)['links'].present?
-        cache_db_content(page)['links'].each_slice(20) do |links|
-          CreatePagesForUrlsJob.perform_later page.links
+      cached_page = Cached::Page.new(page)
+      cached_page.page
+
+      if cached_page.content['links'].present?
+        cached_page.content['links'].each_slice(20) do |links|
+          CreatePagesForUrlsJob.perform_later links
         end
       end
 
+      extracted_words_map = create_extracted_words_map(cached_page.content['extracted_words'])
+
       # Get words on this page
-      words_strings = extracted_words_map(page).keys
+      words_strings = extracted_words_map.keys
 
       # Find db words that exist
       found_words = Word.where(value: words_strings).to_a
@@ -35,11 +40,11 @@ module Services
       found_words = found_words.concat(created_words)
 
       page_words = found_words.map do |word|
-        PageWord.create_or_find_by word: word, page: page
+        PageWord.create_or_find_by word: word, page: cached_page.page
       end
 
       page_words.each do |page_word|
-        page_word[:page_count] = extracted_words_map(page)[page_word.word.value]
+        page_word[:page_count] = extracted_words_map[page_word.word.value]
         page_word.save
       end
     end
@@ -85,33 +90,17 @@ module Services
       allowed
     end
 
-    def extracted_words_map(page)
+    def extract_words(words_to_extract)
+      text = Html2Text.convert words_to_extract
+      text.split /\s/
+    end
+
+    def create_extracted_words_map(extracted_words)
       {}.tap do |map|
-        cache_db_content(page)['extracted_words'].each do |extracted_word|
+        extracted_words.each do |extracted_word|
           map[extracted_word] ||= 0
           map[extracted_word] += 1
         end
-      end
-    end
-
-    def cache_db_words(page)
-      Services::Cache.fetch("#{page.cache_key_with_version}/db_words") do
-        Rails.logger.debug "Cache miss db_words: #{page[:url_string]}"
-        page.words.to_a
-      end
-    end
-
-    def cache_db_page_words(page)
-      Services::Cache.fetch("#{page.cache_key_with_version}/db_page_words") do
-        Rails.logger.debug "Cache miss db_page_words: #{page[:url_string]}"
-        page.page_words.to_a
-      end
-    end
-
-    def cache_db_content(page)
-      Services::Cache.fetch("#{page.cache_key_with_version}/db_page_content") do
-        Rails.logger.debug "Cache miss page_content: #{page[:url_string]}"
-        page.content
       end
     end
 
@@ -141,11 +130,6 @@ module Services
         end.compact),
         extracted_words: extracted_words
       }
-    end
-
-    def extract_words(words_to_extract)
-      text = Html2Text.convert words_to_extract
-      text.split /\s/
     end
 
     def create_mechanize_page(page)

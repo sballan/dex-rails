@@ -1,0 +1,41 @@
+module Services
+  module Cache
+    extend self
+
+    # @param [String] key
+    def delete(key)
+      Rails.cache.delete
+    end
+
+    # @param [String] key
+    #
+    # @return [Boolean]
+    def exist?(key)
+      Rails.cache.exists?(key)
+    end
+
+    def fetch(key, expire_time: nil, &block)
+      rails_cache_opts = {}
+      rails_cache_opts[:expire_time] = expire_time if expire_time
+
+      if block_given?
+        Rails.cache.fetch(key, rails_cache_opts) { block.call }
+      else
+        raise 'Services::Cache.fetch requires block'
+      end
+    end
+
+    # @param [String] key
+    def read(key)
+      Rails.cache.read(key)
+    end
+
+    # @param [String] key
+    def write(key, value, expire_time: nil)
+      rails_cache_opts = {}
+      rails_cache_opts[:expire_time] = expire_time if expire_time
+
+      Rails.cache.write(key, value, rails_cache_opts)
+    end
+  end
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_16_063030) do
+ActiveRecord::Schema.define(version: 2019_12_01_190121) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2019_11_16_063030) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["page_id"], name: "index_page_words_on_page_id"
+    t.index ["word_id", "page_id"], name: "index_page_words_on_word_id_and_page_id", unique: true
     t.index ["word_id"], name: "index_page_words_on_word_id"
   end
 

@@ -29,13 +29,13 @@ module Services
 
       missing_words_objects = missing_words_strings.map {|w| {value: w} }
       created_words = missing_words_objects.map do |word_object|
-        Word.find_or_create_by word_object
+        Word.create_or_find_by word_object
       end
 
       found_words = found_words.concat(created_words)
 
       page_words = found_words.map do |word|
-        PageWord.find_or_create_by word: word, page: page
+        PageWord.create_or_find_by word: word, page: page
       end
 
       page_words.each do |page_word|
@@ -45,7 +45,7 @@ module Services
     end
 
     def cache_crawl_allowed?(page)
-      Rails.cache.fetch("#{page.cache_key_with_version}/crawl_allowed?") do
+      Services::Cache.fetch("#{page.cache_key_with_version}/crawl_allowed?") do
         crawl_allowed?(page)
       end
     end
@@ -95,21 +95,21 @@ module Services
     end
 
     def cache_db_words(page)
-      Rails.cache.fetch("#{page.cache_key_with_version}/db_words") do
+      Services::Cache.fetch("#{page.cache_key_with_version}/db_words") do
         Rails.logger.debug "Cache miss db_words: #{page[:url_string]}"
         page.words.to_a
       end
     end
 
     def cache_db_page_words(page)
-      Rails.cache.fetch("#{page.cache_key_with_version}/db_page_words") do
+      Services::Cache.fetch("#{page.cache_key_with_version}/db_page_words") do
         Rails.logger.debug "Cache miss db_page_words: #{page[:url_string]}"
         page.page_words.to_a
       end
     end
 
     def cache_db_content(page)
-      Rails.cache.fetch("#{page.cache_key_with_version}/db_page_content") do
+      Services::Cache.fetch("#{page.cache_key_with_version}/db_page_content") do
         Rails.logger.debug "Cache miss page_content: #{page[:url_string]}"
         page.content
       end

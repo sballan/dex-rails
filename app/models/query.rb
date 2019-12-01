@@ -25,7 +25,6 @@ class Query < ApplicationRecord
       total_words_on_page = cached_page.page[:word_count]
       total_words_on_page ||= cached_page.content['extracted_words'].count
 
-
       words.each do |word|
         page_word = cached_page.page_words.find do |pw|
           pw.word_id == word.id

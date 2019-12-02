@@ -6,7 +6,7 @@ module Services
 
     # @param [Page] page
     def crawl(page)
-      unless cache_crawl_allowed?(page)
+      unless crawl_allowed??(page)
         Rails.logger.info "Skipping crawl for #{page[:url_string]}"
         return
       end
@@ -52,12 +52,6 @@ module Services
       end
 
       page.touch
-    end
-
-    def cache_crawl_allowed?(page)
-      Services::Cache.fetch("#{page.cache_key_with_version}/crawl_allowed?") do
-        crawl_allowed?(page)
-      end
     end
 
     def crawl_allowed?(page)

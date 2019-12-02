@@ -6,7 +6,7 @@ module Services
 
     # @param [Page] page
     def crawl(page)
-      unless crawl_allowed??(page)
+      unless crawl_allowed?(page)
         Rails.logger.info "Skipping crawl for #{page[:url_string]}"
         return
       end

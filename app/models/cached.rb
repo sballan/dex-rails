@@ -8,6 +8,6 @@ module Cached
   end
 
   def log_memory_miss(name:, message:)
-    Rails.logger.info "Cache Memory miss #{name}: #{message}"
+    Rails.logger.debug "Cache Memory miss #{name}: #{message}"
   end
 end

@@ -16,9 +16,10 @@ module Services
       Rails.cache.exists?(key)
     end
 
-    def fetch(key, expire_time: nil, &block)
+    def fetch(key, expire_time: nil, skip_nil: true, &block)
       rails_cache_opts = {}
       rails_cache_opts[:expire_time] = expire_time if expire_time
+      rails_cache_opts[:skip_nil] = skip_nil
 
       if block_given?
         Rails.cache.fetch(key, rails_cache_opts) { block.call }

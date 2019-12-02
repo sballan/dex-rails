@@ -4,7 +4,7 @@ class CreatePagesForUrlsJob < ApplicationJob
   queue_as :persisting
 
   rescue_from(Page::LimitReached) do
-    retry_job queue: :retry_persisting, wait: Random.rand(1..60)
+    retry_job queue: :retry_persisting, wait: Random.rand((10.minutes)..(6.hours))
   end
 
   def perform(urls)

@@ -10,8 +10,10 @@ module Cached
     end
 
     def execute
-      Services::Cache.fetch("#{@query.cache_key}/execute", expire_time: 1.week) do
-        @query.execute
+      # short query time so results don't quickly become stale.  Since expire time is 5 minutes now
+      # queries can only be guaranteed to be up to date to the last 5 minutes
+      Services::Cache.fetch("#{@query.cache_key}/execute", expire_time: 5.minutes) do
+        Services::Search.execute @query
       end
     end
   end

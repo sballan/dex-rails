@@ -11,7 +11,10 @@ module Services
         return
       end
 
-      persist_page_content(page)
+      if page.content.blank? || page.content['extracted_words'].blank?
+        CreatePagesForUrlsJob.perform_later [page.url_string]
+        return
+      end
 
       cached_page = Cached::Page.new(page)
       cached_page.page
@@ -47,6 +50,8 @@ module Services
         page_word[:page_count] = extracted_words_map[page_word.word.value]
         page_word.save
       end
+
+      page.touch
     end
 
     def cache_crawl_allowed?(page)
@@ -91,7 +96,14 @@ module Services
 
     def extract_words(words_to_extract)
       text = Html2Text.convert words_to_extract
-      text.split /\s/
+      word_values = text.split /\s/
+      word_values.map! do |word_value|
+        word_value.downcase
+      rescue StandardError => e
+        Rails.logger.info "Could not downcase #{word_value}: #{e.message}"
+      else
+        word_value
+      end
     end
 
     def create_extracted_words_map(extracted_words)
@@ -123,7 +135,6 @@ module Services
 
       {
         title: mechanize_page.title,
-        body: mechanize_page.body.force_encoding('ISO-8859-1'),
         links: mechanize_page.links.map do |mechanize_link|
           mechanize_link.resolved_uri.to_s
                rescue StandardError
@@ -144,13 +155,13 @@ module Services
 
       unless page.host.found?
         page[:download_invalid] = Time.now.utc
-        page.save
+        page.save!
         raise Page::BadCrawl, "Cannot find this host: #{page.host.host_url_string}"
       end
 
       unless page.host.allowed?(page[:url_string])
         page[:download_invalid] = Time.now.utc
-        page.save
+        page.save!
         raise Page::BadCrawl, "Now allowed to crawl this page: #{page[:url_string]}"
       end
 
@@ -161,8 +172,7 @@ module Services
       page.host.increment_crawls
 
       @mechanize_page = agent.get(page[:url_string])
-      page[:download_invalid] = Time.now.utc
-      page.save
+
       unless @mechanize_page.is_a?(Mechanize::Page)
         raise Page::BadCrawl, 'Only html pages are supported'
       end

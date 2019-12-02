@@ -11,7 +11,8 @@ class QueriesController < ApplicationController
   # GET /queries/1
   # GET /queries/1.json
   def show
-    @hits = @query.response
+    cached_query = Cached::Query.new @query
+    @hits = cached_query.execute
   end
 
   # GET /queries/new

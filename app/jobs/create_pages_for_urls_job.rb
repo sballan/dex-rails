@@ -9,7 +9,7 @@ class CreatePagesForUrlsJob < ApplicationJob
 
   def perform(urls)
     urls.map do |url_string|
-      page = Page.find_or_create_by url_string: url_string
+      page = Page.create_or_find_by! url_string: url_string
       if Services::PageCrawl.crawl_allowed?(page)
         Services::PageCrawl.persist_page_content(page)
       end

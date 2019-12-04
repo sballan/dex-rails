@@ -12,7 +12,7 @@ class Page < ApplicationRecord
   serialize :content, JSON
   serialize :words_map, JSON
 
-  validates :url_string, presence: true, uniqueness: true
+  validates :url_string, presence: true
 
   before_validation do
     uri = URI(self[:url_string])

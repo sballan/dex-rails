@@ -47,6 +47,7 @@ class Host < ApplicationRecord
       Rails.logger.debug "Host found: #{self[:host_url_string]}"
       true
     else
+      Rails.logger.debug "Host not found: #{self[:host_url_string]}"
       false
     end
   end
@@ -56,6 +57,7 @@ class Host < ApplicationRecord
       Rails.logger.debug "Url allowed: #{url_string}"
       true
     else
+      Rails.logger.debug "Url not allowed: #{url_string}"
       false
     end
   end

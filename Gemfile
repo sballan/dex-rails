@@ -31,14 +31,15 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop-rails'
   gem 'sqlite3', '~> 1.4'
-  gem 'rack-mini-profiler'
+
+  # gem 'rack-mini-profiler'
 
   # For memory profiling
-  gem 'memory_profiler'
+  # gem 'memory_profiler'
 
   # For call-stack profiling flamegraphs
-  gem 'flamegraph'
-  gem 'stackprof'
+  # gem 'flamegraph'
+  # gem 'stackprof'
 end
 
 group :development do

@@ -5,10 +5,19 @@ class IndexPageJob < ApplicationJob
 
   discard_on Page::BadCrawl
 
+  # @param [Page] page
   def perform(page)
     Rails.logger.info "Attempting page index for: #{page.url_string}"
 
-    return unless should_index?(page)
+    unless page.index_allowed?
+      Rails.logger.error "Not indexing, index not allowed for #{page.url_string}"
+      return
+    end
+
+    unless page.recently_indexed?(5.minutes)
+      Rails.logger.warn "Not indexing, indexed too recently: #{page.url_string}"
+      return
+    end
 
     extracted_words_map = {}.tap do |map|
       page.content['extracted_words'].each do |extracted_word|
@@ -37,7 +46,7 @@ class IndexPageJob < ApplicationJob
 
     plucked_words.map do |word|
       page_count = extracted_words_map[word[:value]]
-      IndexPageWordJob.perform_later(page.id, word[:id], page_count)
+      IndexPageWordJob.perform_later(page.id, word[:id], page_count: page_count)
     end
 
     # page_words = plucked_words.map do |word|

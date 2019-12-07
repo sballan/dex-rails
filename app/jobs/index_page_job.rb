@@ -14,7 +14,7 @@ class IndexPageJob < ApplicationJob
       return
     end
 
-    if page.recently_indexed?(10.seconds)
+    if page.recently_indexed?(30.seconds)
       Rails.logger.warn "Not indexing, indexed too recently: #{page.url_string}"
       return
     end

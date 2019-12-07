@@ -14,7 +14,8 @@ class PagesController < ApplicationController
   def show
     if params[:crawl]
       Rails.logger.debug "Crawling #{@page.url_string}"
-      CrawlHostJob.perform_later @page.url_string
+      # Services::PageCrawl.crawl(@page)
+      IndexPageJob.perform_now @page
     end
   end
 

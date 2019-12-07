@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_06_023159) do
+ActiveRecord::Schema.define(version: 2019_12_06_023160) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 2019_12_06_023159) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "failure_retry_seconds", default: 300
     t.integer "invalid_retry_seconds", default: 86400
-    t.integer "success_retry_seconds", default: 60
+    t.integer "success_retry_seconds", default: 10
     t.index ["host_url_string"], name: "index_hosts_on_host_url_string", unique: true
   end
 

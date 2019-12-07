@@ -126,29 +126,26 @@ module Robotstxt
       @body.each_line do |r|
         case r
         when /^#.+$/
-
+          next
         when /^\s*user-agent\s*:.+$/
-
           @rules << [r.split(':')[1].strip, [], []]
 
         when /^\s*useragent\s*:.+$/
-
           @rules << [r.split(':')[1].strip, [], []]
-
         when /^\s*disallow\s*:.+$/
           r = r.split(':')[1].strip
           @rules.last[1] << r.gsub(/\*/, '.+') unless r.empty?
-
         when /^\s*allow\s*:.+$/
           r = r.split(':')[1].strip
           @rules.last[2] << r.gsub(/\*/, '.+') unless r.empty?
-
         when /^\s*sitemap\s*:.+$/
           unless r.empty?
             @sitemaps << r.split(':')[1].strip + (r.split(':')[2].nil? ? '' : r.split(':')[2].strip)
-           end
-
+          end
         end
+      rescue => e
+        Rails.logger.error e
+        next
       end
     end
   end

@@ -63,9 +63,7 @@ class Host < ApplicationRecord
   # @return [Robotstxt::Parser]
   def robotstxt_parser
     @robotstxt_parser ||= Robotstxt::Parser.new
-    unless @robotstxt_parser.found?
-      @robotstxt_parser.get(self[:host_url_string])
-    end
+    @robotstxt_parser.get(self[:host_url_string])
     @robotstxt_parser
   end
 end

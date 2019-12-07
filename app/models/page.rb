@@ -15,7 +15,7 @@ class Page < ApplicationRecord
   validates :url_string, presence: true
 
   before_validation do
-    unless self.host.present?
+    unless host.present?
       uri = URI(self[:url_string])
       host_url_string = "#{uri.scheme}://#{uri.host}"
       self.host ||= Host.find_or_create_by host_url_string: host_url_string

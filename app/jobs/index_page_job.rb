@@ -22,8 +22,8 @@ class IndexPageJob < ApplicationJob
     # Find db words that exist
     Rails.logger.info "Plucking #{words_strings} words"
     plucked_words = Word.where(value: words_strings)
-                      .pluck(:id, :value)
-                      .map { |v| { id: v[0], value: v[1] } }
+                        .pluck(:id, :value)
+                        .map { |v| { id: v[0], value: v[1] } }
 
     missing_words_strings = words_strings - plucked_words.map { |plucked_word| plucked_word[:value] }
 
@@ -32,7 +32,7 @@ class IndexPageJob < ApplicationJob
       Word.create_or_find_by! word_object
     end
 
-    created_words.map! {|word| { id: word.id, value: word.value } }
+    created_words.map! { |word| { id: word.id, value: word.value } }
     plucked_words.concat(created_words)
 
     plucked_words.map do |word|
@@ -47,7 +47,6 @@ class IndexPageJob < ApplicationJob
     # end
     #
     # Rails.logger.info "mapped #{page_words.size} page_words"
-
   end
 
   def should_index?(page)

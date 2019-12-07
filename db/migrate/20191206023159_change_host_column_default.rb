@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeHostColumnDefault < ActiveRecord::Migration[6.0]
   def change
     change_column_default(:hosts, :failure_retry_seconds, from: 3600, to: 5.minutes)

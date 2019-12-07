@@ -143,7 +143,7 @@ module Robotstxt
             @sitemaps << r.split(':')[1].strip + (r.split(':')[2].nil? ? '' : r.split(':')[2].strip)
           end
         end
-      rescue => e
+      rescue StandardError => e
         Rails.logger.error e
         next
       end

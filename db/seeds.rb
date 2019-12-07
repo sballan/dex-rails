@@ -13,4 +13,3 @@ Page.create(url_string: 'https://en.wikipedia.org/wiki/Star_Wars')
 Page.create(url_string: 'https://soundcloud.com/vulfpeck')
 Page.create(url_string: 'https://www.starwars.com/community')
 Page.create(url_string: 'https://fanlore.org/wiki/His_Dark_Materials')
-

@@ -8,6 +8,8 @@ class Page < ApplicationRecord
   has_many :page_words, dependent: :destroy
   has_many :words, through: :page_words
 
+  has_and_belongs_to_many :indexing_batches
+
   serialize :links, JSON
   serialize :content, JSON
   serialize :words_map, JSON
@@ -22,33 +24,33 @@ class Page < ApplicationRecord
     end
   end
 
-  def create_mechanize_page(page)
-    Rails.logger.info "Attempting to fetch page: #{page.url_string}"
+  def create_mechanize_page
+    Rails.logger.info "Attempting to fetch page: #{url_string}"
 
     unless host.found?
-      page[:download_invalid] = Time.now.utc
+      self[:download_invalid] = Time.now.utc
       save!
-      raise Page::BadCrawl, "Cannot find this host: #{page.host.host_url_string}"
+      raise Page::BadCrawl, "Cannot find this host: #{host.host_url_string}"
     end
 
-    unless host.allowed?(page[:url_string])
-      page[:download_invalid] = Time.now.utc
+    unless host.allowed?(self[:url_string])
+      self[:download_invalid] = Time.now.utc
       save!
-      raise Page::BadCrawl, "Host not allowed for this page: #{page[:url_string]}"
+      raise Page::BadCrawl, "Host not allowed for this page: #{self[:url_string]}"
     end
 
     if host.rate_limit_reached?
-      page[:download_failure] = Time.now.utc
+      self[:download_failure] = Time.now.utc
       save!
-      raise Page::LimitReached, "Rate limit reached, skipping #{page[:url_string]}"
+      raise Page::LimitReached, "Rate limit reached, skipping #{self[:url_string]}"
     end
 
-    Rails.logger.info "Fetching page: #{page[:url_string]}"
+    Rails.logger.info "Fetching page: #{self[:url_string]}"
 
-    page.host.increment_crawls
+    host.increment_crawls
 
     agent = Mechanize.new
-    mechanize_page = agent.get(page[:url_string])
+    mechanize_page = agent.get(self[:url_string])
 
     unless mechanize_page.is_a?(Mechanize::Page)
       raise Page::BadCrawl, 'Only html pages are supported'
@@ -57,8 +59,8 @@ class Page < ApplicationRecord
     mechanize_page
   rescue Mechanize::ResponseCodeError => e
     Rails.logger.error e.message
-    page[:download_failure] = Time.now.utc
-    page.save
+    self[:download_failure] = Time.now.utc
+    save
     raise Page::BadCrawl, "Couldn't reach this page"
   end
 
@@ -71,11 +73,13 @@ class Page < ApplicationRecord
 
     index_interval ||= page.host.success_retry_seconds
 
-    Time.now < last_download + index_interval
+    Time.now.to_i < last_download + index_interval.to_i
   end
 
   def index_allowed?
     return false unless host.allowed?(url_string)
-    return false unless host.rate_limit_reached?
+    return false if host.rate_limit_reached?
+
+    true
   end
 end

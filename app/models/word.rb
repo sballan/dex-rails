@@ -6,8 +6,6 @@ class Word < ApplicationRecord
   has_many :page_words, dependent: :destroy
   has_many :pages, through: :page_words
 
-  validates :value, presence: true
-
   def self.fetch_persisted_objects_for(words_strings)
     Rails.logger.info "Plucking #{words_strings.size} words"
 

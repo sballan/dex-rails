@@ -5,7 +5,7 @@ class QueriesController < ApplicationController
 
   def index
     @query = Query.new
-    @queries = Query.all.limit(3).order('id desc')
+    @queries = Query.all.limit(5).order('id desc')
   end
 
   # GET /queries/1

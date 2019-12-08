@@ -3,7 +3,7 @@ class IndexingBatch < ApplicationRecord
 
   def perform_now
     start!
-    pages.in_batches(of: 1).each_record do |page|
+    pages.in_batches(of: 10).each_record do |page|
       download_page(page)
       parse_page(page)
       index_page(page)
@@ -14,7 +14,7 @@ class IndexingBatch < ApplicationRecord
 
   def perform_later
     start!
-    pages.in_batches(of: 10).each_record do |page|
+    pages.in_batches(of: 100).each_record do |page|
       DownloadJob.perform_later(self, page)
     end
   end
@@ -30,7 +30,7 @@ class IndexingBatch < ApplicationRecord
     Services::Cache.write(
       "#{cache_key}/#{page.cache_key}/download",
       mechanize_page_string,
-      expire_time: 1.hour
+      expire_time: 1.day
     )
   end
 
@@ -60,7 +60,6 @@ class IndexingBatch < ApplicationRecord
         word_value
       end
 
-
       {
         title: mechanize_page.title,
         links: mechanize_page.links.map do |mechanize_link|
@@ -75,7 +74,7 @@ class IndexingBatch < ApplicationRecord
     Services::Cache.write(
       "#{cache_key}/#{page.cache_key}/parse",
       page_content,
-      expire_time: 1.hour
+      expire_time: 1.day
     )
   end
 
@@ -100,8 +99,15 @@ class IndexingBatch < ApplicationRecord
       page_word.save!
     end
 
+    parsed_page[:links].uniq.each do |link|
+      Page.create_or_find_by!(url_string: link)
+    end
+
     page[:download_success] = Time.now.utc
     page.save!
+
+    Services::Cache.delete("#{cache_key}/#{page.cache_key}/download")
+    Services::Cache.delete("#{cache_key}/#{page.cache_key}/parse")
 
     Rails.logger.info "Successfully indexed #{page[:url_string]}"
   end

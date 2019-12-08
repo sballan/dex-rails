@@ -15,7 +15,9 @@ class PagesController < ApplicationController
     if params[:crawl]
       Rails.logger.debug "Crawling #{@page.url_string}"
       # Services::PageCrawl.crawl(@page)
-      IndexPageJob.perform_now @page
+      batch = IndexingBatch.create
+      batch.pages << @page
+      batch.perform_now
     end
   end
 

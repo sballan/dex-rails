@@ -5,8 +5,8 @@ module Services
     module_function
 
     # @param [String] key
-    def delete(_key)
-      Rails.cache.delete
+    def delete(key)
+      Rails.cache.delete(key)
     end
 
     # @param [String] key

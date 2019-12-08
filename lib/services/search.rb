@@ -9,44 +9,28 @@ module Services
 
       # Only query for words we've seen before
       words = Word.where(value: words_in_query)
-      cached_words = words.map { |word| Cached::Word.new word }
-
-      # Get all pages for all words
-      pages = cached_words.map(&:pages).flatten.uniq
-      cached_pages = pages.map { |page| Cached::Page.new page }
 
       hit_set = Set.new
-      cached_pages.each do |cached_page|
-        page_hits = process_page_hits(cached_page, words)
-        page_hits.each { |hit| hit_set << hit } unless page_hits.blank?
+      words.each do |word|
+        word.page_words.in_batches.each_record do |page_word|
+          page_hit = process_page_hit(page_word)
+          hit_set << page_hit unless page_hit.blank?
+        end
       end
 
       hit_set.to_a.sort_by { |h| h[:count].to_f / h[:total_words_on_page].to_f }.reverse
     end
 
-    def process_page_hits(cached_page, words)
-      return if cached_page.content.blank?
-      return if cached_page.content['extracted_words'].blank?
+    def process_page_hit(page_word)
+      total_words_on_page = page_word.page[:word_count]
+      return if total_words_on_page.blank?
 
-      total_words_on_page = cached_page.page[:word_count]
-      total_words_on_page ||= cached_page.content['extracted_words'].count
-
-      words.map do |word|
-        page_word = cached_page.page_words.find do |pw|
-          pw.word_id == word.id
-        end
-
-        if page_word.nil?
-          nil
-        else
-          {
-            url_string: cached_page.page.url_string,
-            word: word.value,
-            count: page_word.page_count,
-            total_words_on_page: total_words_on_page
-          }
-        end
-      end.compact
+      {
+        url_string: page_word.page.url_string,
+        word: page_word.word.value,
+        count: page_word.page_count,
+        total_words_on_page: total_words_on_page
+      }
     end
   end
 end

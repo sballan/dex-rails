@@ -37,7 +37,6 @@ class PagesController < ApplicationController
     host = Host.find_or_create_by(host_url_string: "#{uri.scheme}://#{uri.host}")
     @page.host = host
 
-    CrawlHostJob.perform_later @page.url_string
 
     respond_to do |format|
       if @page.save

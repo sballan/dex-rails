@@ -81,6 +81,9 @@ class IndexingBatch < ApplicationRecord
   def index_page(page)
     parsed_page = Services::Cache.read("#{cache_key}/#{page.cache_key}/parse")
 
+    page[:word_count] = parsed_page[:extracted_words].size
+    page.save!
+
     extracted_words_map = {}.tap do |map|
       parsed_page[:extracted_words].each do |extracted_word|
         map[extracted_word] ||= 0

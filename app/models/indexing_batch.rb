@@ -30,7 +30,7 @@ class IndexingBatch < ApplicationRecord
     Services::Cache.write(
       "#{cache_key}/#{page.cache_key}/download",
       mechanize_page_string,
-      expire_time: 1.day
+      expire_time: 1.week
     )
   end
 
@@ -74,7 +74,7 @@ class IndexingBatch < ApplicationRecord
     Services::Cache.write(
       "#{cache_key}/#{page.cache_key}/parse",
       page_content,
-      expire_time: 1.day
+      expire_time: 1.week
     )
   end
 

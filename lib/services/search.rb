@@ -5,7 +5,7 @@ module Services
     module_function
 
     def execute(query)
-      words_in_query = query.value.split(/\s/)
+      words_in_query = query.value.split(/\s/).map(&:downcase)
 
       # Only query for words we've seen before
       words = Word.where(value: words_in_query)

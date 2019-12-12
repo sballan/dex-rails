@@ -2,7 +2,7 @@
 :queues:
   - [indexing, 256]
   - [parsing, 128]
-  - [downloading, 4]
+  - [downloading, 16]
   - [critical, 1024]
   - [persisting, 512]
   - [retry_persisting, 128]

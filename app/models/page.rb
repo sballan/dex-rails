@@ -50,6 +50,7 @@ class Page < ApplicationRecord
     host.increment_crawls
 
     agent = Mechanize.new
+    agent.robots = true
     mechanize_page = agent.get(self[:url_string])
 
     unless mechanize_page.is_a?(Mechanize::Page)

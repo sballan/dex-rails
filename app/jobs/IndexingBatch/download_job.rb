@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IndexingBatch
   class DownloadJob < ApplicationJob
     queue_as :downloading

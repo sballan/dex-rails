@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IndexingBatch < ApplicationRecord
   has_and_belongs_to_many :pages
 
@@ -41,7 +43,7 @@ class IndexingBatch < ApplicationRecord
 
       mechanize_page = Mechanize::Page.new(
         nil,
-        {'content-type'=>'text/html'},
+        { 'content-type' => 'text/html' },
         downloaded_page,
         nil,
         Mechanize.new
@@ -116,9 +118,7 @@ class IndexingBatch < ApplicationRecord
   end
 
   def start!
-    if currently_running?
-      raise "Already running this batch"
-    end
+    raise 'Already running this batch' if currently_running?
 
     current_time = Time.now.utc
 
@@ -156,8 +156,6 @@ class IndexingBatch < ApplicationRecord
     ].max
   end
 
-
-
   # EVENT_TIMES = [
   #   :created_at,
   #   :updated_at,
@@ -166,7 +164,6 @@ class IndexingBatch < ApplicationRecord
   #   :failed_at,
   #   :successful_at
   # ]
-
 
   # def event_times
   #   Rails.cache.fetch("#{cache_key_with_version}/event_times") do

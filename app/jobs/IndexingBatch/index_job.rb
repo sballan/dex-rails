@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IndexingBatch
   class IndexJob < ApplicationJob
     queue_as :indexing

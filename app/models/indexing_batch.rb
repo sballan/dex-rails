@@ -78,6 +78,8 @@ class IndexingBatch < ApplicationRecord
       page_content,
       expire_time: 1.week
     )
+
+    Services::Cache.delete("#{cache_key}/#{page.cache_key}/download")
   end
 
   def index_page(page)
@@ -111,7 +113,6 @@ class IndexingBatch < ApplicationRecord
     page[:download_success] = Time.now.utc
     page.save!
 
-    Services::Cache.delete("#{cache_key}/#{page.cache_key}/download")
     Services::Cache.delete("#{cache_key}/#{page.cache_key}/parse")
 
     Rails.logger.info "Successfully indexed #{page[:url_string]}"

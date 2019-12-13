@@ -1,51 +1,50 @@
-<p id="notice"><%= notice %></p>
+<section class="section">
 
-<h1>Queries</h1>
+  <p id="notice"><%= notice %></p>
 
-<%= @query && form_with(model: @query, local: true) do |form| %>
-  <% if @query.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@query.errors.count, "error") %> prohibited this query from being saved:</h2>
+  <div class="container has-text-centered">
+    <h1 class="title">Search</h1>
 
-      <ul>
-        <% @query.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+    <%= @query && form_with(model: @query, local: true) do |form| %>
+      <% if @query.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@query.errors.count, "error") %> prohibited this query from being saved:</h2>
 
-  <div class="field">
-    <%= form.label :value %>
-    <%= form.text_area :value %>
-  </div>
+          <ul>
+            <% @query.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
-
-<table>
-  <thead>
-    <tr>
-      <th>Value</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @queries&.each do |query| %>
-      <tr>
-        <td><%= query.value %></td>
-        <td><%= link_to 'Show', query %></td>
-        <td><%= link_to 'Edit', edit_query_path(query) %></td>
-        <td><%= link_to 'Destroy', query, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+      <div class="field">
+        <%= form.text_field :value, class: 'input' %>
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
 
+</section>
 
+<section class="section">
+  <div class="container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Past Searches</th>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
 
-<br>
-
+      <tbody>
+        <% @queries&.each do |query| %>
+          <tr>
+            <td><%= query.value %></td>
+            <td><%= link_to 'Show', query %></td>
+            <td><%= link_to 'Destroy', query, method: :delete, class: 'delete' %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

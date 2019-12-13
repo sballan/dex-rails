@@ -1,8 +1,10 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Hosts</h1>
+<h1 class="title">Hosts</h1>
 
-<table>
+<%= link_to 'New Host', new_host_path %>
+
+<table class="table">
   <thead>
     <tr>
       <th>Host url string</th>
@@ -23,5 +25,3 @@
 </table>
 
 <br>
-
-<%= link_to 'New Host', new_host_path %>

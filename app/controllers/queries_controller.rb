@@ -11,7 +11,7 @@ class QueriesController < ApplicationController
   # GET /queries/1
   # GET /queries/1.json
   def show
-    @hits = Services::Search.execute @query
+    @hits = Services::Search.execute(@query)[0..10]
   end
 
   # GET /queries/new
@@ -29,7 +29,7 @@ class QueriesController < ApplicationController
 
     respond_to do |format|
       if @query.save
-        format.html { redirect_to query_path(@query), notice: 'Query was successfully created.' }
+        format.html { redirect_to query_path(@query) }
         format.json { render :show, status: :created, location: @query }
       else
         format.html { render :new }

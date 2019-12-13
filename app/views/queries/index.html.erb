@@ -39,8 +39,7 @@
       <tbody>
         <% @queries&.each do |query| %>
           <tr>
-            <td><%= query.value %></td>
-            <td><%= link_to 'Show', query %></td>
+            <td><%= link_to query.value, query %></td>
             <td><%= link_to 'Destroy', query, method: :delete, class: 'delete' %></td>
           </tr>
         <% end %>

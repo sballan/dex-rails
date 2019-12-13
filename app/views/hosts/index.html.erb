@@ -1,27 +1,33 @@
 <p id="notice"><%= notice %></p>
 
-<h1 class="title">Hosts</h1>
+<section class="section">
+  <div class="level">
+    <div class="level-left">
+      <h1 class="title">Recent Hosts</h1>
+    </div>
+    <div class="level-right">
+      <%= link_to 'New Host', new_host_path, class: "button is-primary" %>
+    </div>
+  </div>
 
-<%= link_to 'New Host', new_host_path %>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Host url string</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @hosts.each do |host| %>
+  <table class="table">
+    <thead>
       <tr>
-        <td><%= host.host_url_string %></td>
-        <td><%= link_to 'Show', host %></td>
-        <td><%= link_to 'Edit', edit_host_path(host) %></td>
-        <td><%= link_to 'Destroy', host, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <th>Host url string</th>
+        <th colspan="3"></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
+    <tbody>
+      <% @hosts.each do |host| %>
+        <tr>
+          <td><%= host.host_url_string %></td>
+          <td><%= link_to 'Show', host %></td>
+          <td><%= link_to 'Edit', edit_host_path(host) %></td>
+          <td><%= link_to 'Destroy', host, method: :delete, class: 'delete' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>

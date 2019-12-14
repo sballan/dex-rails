@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_191_214_004_225) do
+ActiveRecord::Schema.define(version: 20_191_214_010_412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(version: 20_191_214_004_225) do
     t.jsonb 'data'
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
+    t.string 'type'
+    t.index ['type'], name: 'index_batches_on_type'
   end
 
   create_table 'hosts', force: :cascade do |t|

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_191_214_010_412) do
+ActiveRecord::Schema.define(version: 20_191_214_012_552) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
@@ -26,6 +26,13 @@ ActiveRecord::Schema.define(version: 20_191_214_010_412) do
     t.datetime 'updated_at', precision: 6, null: false
     t.string 'type'
     t.index ['type'], name: 'index_batches_on_type'
+  end
+
+  create_table 'batches_pages', id: false, force: :cascade do |t|
+    t.bigint 'batch_id', null: false
+    t.bigint 'page_id', null: false
+    t.index %w[batch_id page_id], name: 'index_batches_pages_on_batch_id_and_page_id'
+    t.index %w[page_id batch_id], name: 'index_batches_pages_on_page_id_and_batch_id'
   end
 
   create_table 'hosts', force: :cascade do |t|

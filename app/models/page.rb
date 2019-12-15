@@ -51,7 +51,7 @@ class Page < ApplicationRecord
     Rails.logger.error e.message
     self[:download_failure] = Time.now.utc
     save!
-    raise Page::BadCrawl, "Couldn't reach this page"
+    raise Page::BadCrawl, "Couldn't reach this page #{self[:url_string]}"
   end
 
   def create_mechanize_page
@@ -84,7 +84,7 @@ class Page < ApplicationRecord
     Rails.logger.error e.message
     self[:download_invalid] = Time.now.utc
     save
-    raise Page::BadCrawl, "Couldn't reach this page"
+    raise Page::BadCrawl, "Couldn't reach this page #{self[:url_string]}"
   end
 
   def recently_indexed?(index_interval = nil)

@@ -55,11 +55,11 @@ class Page < ApplicationRecord
   end
 
   def create_mechanize_page
-    unless host.allowed?(self[:url_string])
-      self[:download_invalid] = Time.now.utc
-      save!
-      raise Page::BadCrawl, "Host not allowed for this page: #{self[:url_string]}"
-    end
+    # unless host.allowed?(self[:url_string])
+    #   self[:download_invalid] = Time.now.utc
+    #   save!
+    #   raise Page::BadCrawl, "Host not allowed for this page: #{self[:url_string]}"
+    # end
 
     if host.rate_limit_reached?
       self[:download_failure] = Time.now.utc

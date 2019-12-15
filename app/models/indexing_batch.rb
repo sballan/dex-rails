@@ -62,7 +62,7 @@ class IndexingBatch < ApplicationRecord
         word_value
       end
 
-      downcase.reject!(&:blank?)
+      downcase_words.reject!(&:blank?)
 
       {
         title: mechanize_page.title,

@@ -10,6 +10,8 @@ class Batch < ApplicationRecord
   #   :successful_at
   # ]
 
+  has_and_belongs_to_many :pages
+
   def perform_now
     start!
     stop!

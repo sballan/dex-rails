@@ -24,14 +24,34 @@ class Page < ApplicationRecord
     end
   end
 
-  def create_mechanize_page
+  def fetch_with_agent(agent)
     Rails.logger.info "Attempting to fetch page: #{url_string}"
 
-    unless host.found?
-      self[:download_invalid] = Time.now.utc
+    if host.rate_limit_reached?
+      self[:download_failure] = Time.now.utc
       save!
-      raise Page::BadCrawl, "Cannot find this host: #{host.host_url_string}"
+      raise Page::LimitReached, "Rate limit reached, skipping #{self[:url_string]}"
     end
+
+    Rails.logger.info "Fetching page: #{self[:url_string]}"
+
+    host.increment_crawls
+
+    agent ||= Mechanize.new
+    agent.robots = true
+    mechanize_page = agent.get(self[:url_string])
+
+    unless mechanize_page.is_a?(Mechanize::Page)
+      raise Page::BadCrawl, 'Only html pages are supported'
+    end
+
+    mechanize_page.body.to_s
+  rescue Mechanize::ResponseCodeError => e
+    Rails.logger.error e.message
+    self[:download_failure] = Time.now.utc
+    save!
+    raise Page::BadCrawl, "Couldn't reach this page"
+  end
 
     unless host.allowed?(self[:url_string])
       self[:download_invalid] = Time.now.utc

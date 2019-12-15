@@ -53,6 +53,7 @@ class Page < ApplicationRecord
     raise Page::BadCrawl, "Couldn't reach this page"
   end
 
+  def create_mechanize_page
     unless host.allowed?(self[:url_string])
       self[:download_invalid] = Time.now.utc
       save!

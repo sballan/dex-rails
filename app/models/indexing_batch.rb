@@ -23,7 +23,7 @@ class IndexingBatch < ApplicationRecord
 
   # @param [::Page] page
   def download_page(page, force = false)
-    if page.download_success > 1.day.ago && !force
+    if !force && page.download_success && page.download_success > 1.day.ago
       raise Page::DownloadTooRecent, "Already successfully downloaded today: #{page.url_string}"
     end
 

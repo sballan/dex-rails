@@ -18,18 +18,21 @@ module Services
         end
       end
 
-      hit_set.to_a.sort_by { |h| h[:count].to_f / h[:total_words_on_page].to_f }.reverse
+      hit_set.to_a.sort_by do |hit|
+        # some weird math...probably bad.
+        order_rating = hit[:first_index]
+        freq_rating = hit[:total_words_on_page].to_f / hit[:count].to_f
+        order_rating * freq_rating
+      end
     end
 
     def process_page_hit(page_word)
-      total_words_on_page = page_word.page[:word_count]
-      return if total_words_on_page.blank?
-
       {
         url_string: page_word.page.url_string,
         word: page_word.word.value,
-        count: page_word.page_count,
-        total_words_on_page: total_words_on_page
+        count: page_word.data['word_count'],
+        first_index: page_word.data['first_index'],
+        total_words_on_page: page_word.data['total_word_count']
       }
     end
   end

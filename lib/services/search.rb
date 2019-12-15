@@ -8,14 +8,12 @@ module Services
       words_in_query = query.value.split(/\s/).map(&:downcase)
 
       # Only query for words we've seen before
-      words = Word.where(value: words_in_query)
+      word_ids = Word.where(value: words_in_query).pluck(:id)
 
       hit_set = Set.new
-      words.each do |word|
-        word.page_words.in_batches.each_record do |page_word|
-          page_hit = process_page_hit(page_word)
-          hit_set << page_hit unless page_hit.blank?
-        end
+      PageWord.where(word_id: word_ids).in_batches.each_record do |page_word|
+        page_hit = process_page_hit(page_word)
+        hit_set << page_hit unless page_hit.blank?
       end
 
       hit_set.to_a.sort_by do |hit|

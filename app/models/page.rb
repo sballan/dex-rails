@@ -79,9 +79,9 @@ class Page < ApplicationRecord
     end
 
     mechanize_page
-  rescue Mechanize::ResponseCodeError => e
+  rescue Mechanize::ResponseCodeError, Mechanize::RobotsDisallowedError => e
     Rails.logger.error e.message
-    self[:download_failure] = Time.now.utc
+    self[:download_invalid] = Time.now.utc
     save
     raise Page::BadCrawl, "Couldn't reach this page"
   end

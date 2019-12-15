@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_191_214_012_552) do
+ActiveRecord::Schema.define(version: 20_191_215_002_308) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20_191_214_012_552) do
     t.integer 'page_count'
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
+    t.jsonb 'data', default: { 'next_ids' => [], 'prev_ids' => [], 'word_count' => nil, 'all_indexes' => [], 'first_index' => nil, 'total_word_count' => nil }
     t.index ['page_id'], name: 'index_page_words_on_page_id'
     t.index %w[word_id page_id], name: 'index_page_words_on_word_id_and_page_id', unique: true
     t.index ['word_id'], name: 'index_page_words_on_word_id'

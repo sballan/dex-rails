@@ -3,4 +3,4 @@
   - [critical, 1024]
   - [indexing, 256]
   - [parsing, 128]
-  - [downloading, 16]
+  - [downloading, 32]

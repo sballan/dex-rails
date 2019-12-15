@@ -62,6 +62,8 @@ class IndexingBatch < ApplicationRecord
         word_value
       end
 
+      downcase.reject!(&:blank?)
+
       {
         title: mechanize_page.title,
         links: mechanize_page.links.map do |mechanize_link|
@@ -85,24 +87,36 @@ class IndexingBatch < ApplicationRecord
   def index_page(page)
     parsed_page = Services::Cache.read("#{cache_key}/#{page.cache_key}/parse")
 
-    page[:word_count] = parsed_page[:extracted_words].size
+    extracted_words = parsed_page[:extracted_words]
+    word_count =  extracted_words.size
+    page[:word_count] = word_count
     page.save!
 
-    extracted_words_map = {}.tap do |map|
-      parsed_page[:extracted_words].each do |extracted_word|
-        map[extracted_word] ||= 0
-        map[extracted_word] += 1
+    words_strings = extracted_words.uniq
+    word_objects = Word.fetch_persisted_objects_for(words_strings)
+
+    index_data_map = {}.tap do |map|
+      extracted_words.each_with_index do |extracted_word, index|
+        map[extracted_word] ||= {}
+
+        map[extracted_word][:word_count] ||= 0
+        map[extracted_word][:word_count] += 1
+
+        map[extracted_word][:first_index] ||= index
+
+        map[extracted_word][:all_indexes] ||= []
+        map[extracted_word][:all_indexes] << index
       end
     end
 
-    words_strings = extracted_words_map.keys
-
-    word_objects = Word.fetch_persisted_objects_for(words_strings)
-
-    word_objects.map do |word|
-      page_count = extracted_words_map[word[:value]]
+    word_objects.each do |word|
       page_word = PageWord.create_or_find_by! page_id: page.id, word_id: word[:id]
-      page_word[:page_count] = page_count
+
+      index_entry = index_data_map[word[:value]]
+      page_word.data[:word_count] = index_entry[:word_count]
+      page_word.data[:first_index] = index_entry[:first_index]
+      page_word.data[:all_indexes] = index_entry[:all_indexes]
+      page_word.data[:total_word_count] = extracted_words.size
       page_word.save!
     end
 

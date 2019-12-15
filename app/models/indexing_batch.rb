@@ -22,7 +22,11 @@ class IndexingBatch < ApplicationRecord
   end
 
   # @param [::Page] page
-  def download_page(page)
+  def download_page(page, force = false)
+    if page.download_success > 1.day.ago && !force
+      raise Page::DownloadTooRecent, "Already downloaded today: #{page.url_string}"
+    end
+
     mechanize_page_string = begin
       Rails.logger.debug "Running mechanize_page_string: #{self[:url_string]}"
       mechanize_page = page.create_mechanize_page
@@ -109,16 +113,25 @@ class IndexingBatch < ApplicationRecord
       end
     end
 
-    word_objects.each do |word|
-      page_word = PageWord.create_or_find_by! page_id: page.id, word_id: word[:id]
-
-      index_entry = index_data_map[word[:value]]
-      page_word.data[:word_count] = index_entry[:word_count]
-      page_word.data[:first_index] = index_entry[:first_index]
-      page_word.data[:all_indexes] = index_entry[:all_indexes]
-      page_word.data[:total_word_count] = extracted_words.size
-      page_word.save!
+    page_word_objects = word_objects.map do |word_object|
+      index_entry = index_data_map[word_object[:value]]
+      {
+        page_id: page.id,
+        word_id: word_object[:id],
+        data: {
+          word_count: index_entry[:word_count],
+          first_index: index_entry[:first_index],
+          all_indexes: index_entry[:all_indexes],
+          total_word_count: extracted_words.size,
+          next_ids: [],
+          prev_ids: []
+        },
+        created_at: Time.now.utc,
+        updated_at: Time.now.utc
+      }
     end
+
+    PageWord.upsert_all(page_word_objects, returning: ['id'])
 
     parsed_page[:links].uniq.each do |link|
       Page.create_or_find_by!(url_string: link)

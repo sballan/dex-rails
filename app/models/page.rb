@@ -2,6 +2,7 @@
 
 class Page < ApplicationRecord
   class BadCrawl < StandardError; end
+  class DownloadTooRecent < StandardError; end
   class LimitReached < StandardError; end
 
   belongs_to :host

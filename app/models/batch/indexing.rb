@@ -65,8 +65,8 @@ class Batch
           title: mechanize_page.title,
           links: mechanize_page.links.map do |mechanize_link|
             mechanize_link.resolved_uri.to_s
-                rescue StandardError
-                  nil
+                 rescue StandardError
+                   nil
           end.compact,
           extracted_words: downcase_words
         }

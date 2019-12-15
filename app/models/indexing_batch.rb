@@ -67,14 +67,13 @@ class IndexingBatch < ApplicationRecord
       end
 
       downcase_words.reject!(&:blank?)
+      links = mechanize_page.links.map do |mechanize_link|
+        mechanize_link.resolved_uri.to_s rescue nil
+      end.compact
 
       {
         title: mechanize_page.title,
-        links: mechanize_page.links.map do |mechanize_link|
-          mechanize_link.resolved_uri.to_s
-               rescue StandardError
-                 nil
-        end.compact,
+        links: links,
         extracted_words: downcase_words
       }
     end
@@ -92,6 +91,8 @@ class IndexingBatch < ApplicationRecord
     parsed_page = Services::Cache.read("#{cache_key}/#{page.cache_key}/parse")
 
     extracted_words = parsed_page[:extracted_words]
+    raise "No page content to index" if extracted_words.blank?
+
     word_count = extracted_words.size
     page[:word_count] = word_count
     page.save!
@@ -131,7 +132,11 @@ class IndexingBatch < ApplicationRecord
       }
     end
 
-    PageWord.upsert_all(page_word_objects, returning: ['id'])
+    # index_page_words_on_word_id_and_page_id
+    PageWord.upsert_all(
+      page_word_objects,
+      unique_by: :index_page_words_on_word_id_and_page_id
+    )
 
     parsed_page[:links].uniq.each do |link|
       Page.create_or_find_by!(url_string: link)

@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+# IndexingBatch.create.tap {|i| i.pages << Page.limit(1000).order("RANDOM()") }.perform_later
+
 class IndexingBatch < ApplicationRecord
   has_and_belongs_to_many :pages
 
   def perform_now
     start!
-    pages.in_batches(of: 10).each_record do |page|
+    pages.in_batches(of: 100).each_record do |page|
       download_page(page)
       parse_page(page)
       index_page(page)
@@ -16,7 +18,7 @@ class IndexingBatch < ApplicationRecord
 
   def perform_later
     start!
-    pages.in_batches(of: 100).each_record do |page|
+    pages.in_batches(of: 50).each_record do |page|
       DownloadJob.perform_later(self, page)
     end
   end

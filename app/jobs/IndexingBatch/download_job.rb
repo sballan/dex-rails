@@ -4,6 +4,7 @@ class IndexingBatch
   class DownloadJob < ApplicationJob
     queue_as :downloading
 
+    discard_on Mechanize::RobotsDisallowedError
     discard_on Page::BadCrawl
     discard_on Page::DownloadTooRecent
 

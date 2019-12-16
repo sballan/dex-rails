@@ -146,9 +146,7 @@ class IndexingBatch < ApplicationRecord
       )
     end
 
-    parsed_page[:links].uniq.each do |link|
-      Page.create_or_find_by!(url_string: link)
-    end
+    IndexingBatch::CreatePagesJob.perform_later parsed_page[:links].uniq
 
     page[:download_success] = Time.now.utc
     page.save!

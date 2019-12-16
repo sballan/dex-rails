@@ -140,7 +140,7 @@ class IndexingBatch < ApplicationRecord
       }
     end
 
-    page_word_objects.each_slice(5000) do |slice|
+    page_word_objects.each_slice(1000) do |slice|
       # index_page_words_on_word_id_and_page_id
       PageWord.upsert_all(
         slice,

@@ -73,10 +73,25 @@ class IndexingBatch < ApplicationRecord
         mechanize_link.resolved_uri.to_s rescue nil
       end.compact
 
+      index_data_map = {}.tap do |map|
+        downcase_words.each_with_index do |word, index|
+          map[word] ||= {}
+
+          map[word][:word_count] ||= 0
+          map[word][:word_count] += 1
+
+          map[word][:first_index] ||= index
+
+          map[word][:all_indexes] ||= []
+          map[word][:all_indexes] << index
+        end
+      end
+
       {
         title: mechanize_page.title,
         links: links,
-        extracted_words: downcase_words
+        extracted_words: downcase_words,
+        index_data_map: index_data_map
       }
     end
 
@@ -99,22 +114,11 @@ class IndexingBatch < ApplicationRecord
     page[:word_count] = word_count
     page.save!
 
+    index_data_map = parsed_page[:index_data_map]
+    raise "No index data map" if index_data_map.blank?
+
     words_strings = extracted_words.uniq
     word_objects = Word.fetch_persisted_objects_for(words_strings)
-
-    index_data_map = {}.tap do |map|
-      extracted_words.each_with_index do |extracted_word, index|
-        map[extracted_word] ||= {}
-
-        map[extracted_word][:word_count] ||= 0
-        map[extracted_word][:word_count] += 1
-
-        map[extracted_word][:first_index] ||= index
-
-        map[extracted_word][:all_indexes] ||= []
-        map[extracted_word][:all_indexes] << index
-      end
-    end
 
     page_word_objects = word_objects.map do |word_object|
       index_entry = index_data_map[word_object[:value]]
@@ -134,11 +138,13 @@ class IndexingBatch < ApplicationRecord
       }
     end
 
-    # index_page_words_on_word_id_and_page_id
-    PageWord.upsert_all(
-      page_word_objects,
-      unique_by: :index_page_words_on_word_id_and_page_id
-    )
+    page_word_objects.each_slice(5000) do |slice|
+      # index_page_words_on_word_id_and_page_id
+      PageWord.upsert_all(
+        slice,
+        unique_by: :index_page_words_on_word_id_and_page_id
+      )
+    end
 
     parsed_page[:links].uniq.each do |link|
       Page.create_or_find_by!(url_string: link)

@@ -35,6 +35,8 @@ class IndexingBatch < ApplicationRecord
       mechanize_page.body.to_s
     end
 
+    raise 'Mechanize page has no content' if mechanize_page_string.blank?
+
     Services::Cache.write(
       "#{cache_key}/#{page.cache_key}/download",
       mechanize_page_string,
@@ -61,20 +63,20 @@ class IndexingBatch < ApplicationRecord
 
       text = Html2Text.convert noko_doc.text
       word_values = text.split /\s/
-      downcase_words = word_values.map do |word_value|
+      extracted_words = word_values.map do |word_value|
         word_value.downcase!
       rescue StandardError => e
         Rails.logger.info "Could not downcase #{word_value}: #{e.message}"
         word_value
       end
 
-      downcase_words.reject!(&:blank?)
+      extracted_words.reject!(&:blank?)
       links = mechanize_page.links.map do |mechanize_link|
         mechanize_link.resolved_uri.to_s rescue nil
       end.compact
 
       index_data_map = {}.tap do |map|
-        downcase_words.each_with_index do |word, index|
+        extracted_words.each_with_index do |word, index|
           map[word] ||= {}
 
           map[word][:word_count] ||= 0
@@ -90,7 +92,7 @@ class IndexingBatch < ApplicationRecord
       {
         title: mechanize_page.title,
         links: links,
-        extracted_words: downcase_words,
+        extracted_words: extracted_words,
         index_data_map: index_data_map
       }
     end
@@ -108,14 +110,14 @@ class IndexingBatch < ApplicationRecord
     parsed_page = Services::Cache.read("#{cache_key}/#{page.cache_key}/parse")
 
     extracted_words = parsed_page[:extracted_words]
-    raise "No page content to index" if extracted_words.blank?
+    raise 'No page content to index' if extracted_words.blank?
 
     word_count = extracted_words.size
     page[:word_count] = word_count
     page.save!
 
     index_data_map = parsed_page[:index_data_map]
-    raise "No index data map" if index_data_map.blank?
+    raise 'No index data map' if index_data_map.blank?
 
     words_strings = extracted_words.uniq
     word_objects = Word.fetch_persisted_objects_for(words_strings)

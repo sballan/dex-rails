@@ -4,4 +4,4 @@
   - [indexing, 256]
   - [parsing, 128]
   - [downloading, 64]
-  - [create_pages, 2]
+  - [create_pages, 8]

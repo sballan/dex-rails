@@ -9,9 +9,14 @@ class Word < ApplicationRecord
   def self.fetch_persisted_objects_for(words_strings)
     Rails.logger.info "Plucking #{words_strings.size} words"
 
-    found_word_objects = Word.where(value: words_strings)
-                             .pluck(:id, :value)
-                             .map { |v| { id: v[0], value: v[1] } }
+    found_word_objects = []
+    words_strings.each_slice(200) do |slice|
+      found_word_objects.concat(
+        Word.where(value: slice)
+          .pluck(:id, :value)
+          .map { |v| { id: v[0], value: v[1] } }
+      )
+    end
 
     found_word_strings = found_word_objects.map { |w| w[:value] }
     missing_words_strings = words_strings - found_word_strings

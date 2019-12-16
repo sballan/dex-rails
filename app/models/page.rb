@@ -82,6 +82,8 @@ class Page < ApplicationRecord
     mechanize_page
   rescue Mechanize::RobotsDisallowedError => e
     Rails.logger.debug e.message
+    self[:download_invalid] = Time.now.utc
+    save
     raise e
   rescue Mechanize::ResponseCodeError => e
     Rails.logger.error e.message

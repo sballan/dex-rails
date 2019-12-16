@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Word < ApplicationRecord
-  include Redis::Objects
-
   has_many :page_words, dependent: :destroy
   has_many :pages, through: :page_words
 

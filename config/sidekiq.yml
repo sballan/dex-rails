@@ -3,4 +3,4 @@
   - [create_pages, 4096]
   - [indexing, 128]
   - [parsing, 64]
-  - [downloading, 32]
+  - [downloading, 16]

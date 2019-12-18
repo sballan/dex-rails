@@ -47,21 +47,26 @@ class IndexingBatch < ApplicationRecord
   # @param [::Page] page
   def parse_page(page)
     page_content = begin
-      downloaded_page = Services::Cache.read("#{cache_key}/#{page.cache_key}/download")
 
-      mechanize_page = Mechanize::Page.new(
-        nil,
-        { 'content-type' => 'text/html' },
-        downloaded_page,
-        nil,
-        Mechanize.new
-      )
+      page_text = nil
 
-      noko_doc = Nokogiri::HTML.parse(mechanize_page.body)
-      noko_doc.xpath('//script').remove
-      noko_doc.xpath('//style').remove
+      Services::Cache.read("#{cache_key}/#{page.cache_key}/download").tap do |downloaded_page|
+        mechanize_page = Mechanize::Page.new(
+          nil,
+          { 'content-type' => 'text/html' },
+          downloaded_page,
+          nil,
+          Mechanize.new
+        )
 
-      text = Html2Text.convert noko_doc.text
+        noko_doc = Nokogiri::HTML.parse(mechanize_page.body)
+        noko_doc.xpath('//script').remove
+        noko_doc.xpath('//style').remove
+
+        page_text = noko_doc.text
+      end
+
+      text = Html2Text.convert page_text
       word_values = text.split /\s/
       extracted_words = word_values.map do |word_value|
         word_value.downcase!
@@ -147,7 +152,7 @@ class IndexingBatch < ApplicationRecord
           word_count: index_entry[:word_count],
           first_index: index_entry[:first_index],
           all_indexes: index_entry[:all_indexes],
-          total_word_count: extracted_words.size,
+          total_word_count: words_strings.size,
           next_ids: next_ids,
           prev_ids: prev_ids
         },

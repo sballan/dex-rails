@@ -71,7 +71,8 @@ class IndexingBatch < ApplicationRecord
       end
 
       extracted_words.reject!(&:blank?)
-      links = mechanize_page.links.map do |mechanize_link|
+      links = mechanize_page.links
+      links&.map do |mechanize_link|
         mechanize_link.resolved_uri.to_s rescue nil
       end.compact
 
@@ -81,6 +82,14 @@ class IndexingBatch < ApplicationRecord
 
           map[word][:word_count] ||= 0
           map[word][:word_count] += 1
+
+          map[word][:next_values] ||= []
+          map[word][:next_values] << extracted_words[index + 1]
+          map[word][:next_values].compact!
+
+          map[word][:prev_values] ||= []
+          map[word][:prev_values] << extracted_words[index - 1]
+          map[word][:prev_values].compact!
 
           map[word][:first_index] ||= index
 
@@ -92,7 +101,7 @@ class IndexingBatch < ApplicationRecord
       {
         title: mechanize_page.title,
         links: links,
-        extracted_words: extracted_words,
+        total_word_count: extracted_words.size,
         index_data_map: index_data_map
       }
     end
@@ -109,21 +118,28 @@ class IndexingBatch < ApplicationRecord
   def index_page(page)
     parsed_page = Services::Cache.read("#{cache_key}/#{page.cache_key}/parse")
 
-    extracted_words = parsed_page[:extracted_words]
-    raise 'No page content to index' if extracted_words.blank?
-
-    word_count = extracted_words.size
-    page[:word_count] = word_count
+    page[:word_count] = parsed_page[:total_word_count]
     page.save!
 
-    index_data_map = parsed_page[:index_data_map]
-    raise 'No index data map' if index_data_map.blank?
+    raise 'No index data map' if parsed_page[:index_data_map].blank?
 
-    words_strings = extracted_words.uniq
+    words_strings = parsed_page[:index_data_map].keys
     word_objects = Word.fetch_persisted_objects_for(words_strings)
+
+
+    index_data_map = parsed_page[:index_data_map]
 
     page_word_objects = word_objects.map do |word_object|
       index_entry = index_data_map[word_object[:value]]
+
+      next_ids = index_entry[:next_values].map do |word_value|
+        word_objects.find{|o| o[:value] == word_value}[:id]
+      end
+
+      prev_ids = index_entry[:prev_values].map do |word_value|
+        word_objects.find{|o| o[:value] == word_value}[:id]
+      end
+
       {
         page_id: page.id,
         word_id: word_object[:id],
@@ -132,8 +148,8 @@ class IndexingBatch < ApplicationRecord
           first_index: index_entry[:first_index],
           all_indexes: index_entry[:all_indexes],
           total_word_count: extracted_words.size,
-          next_ids: [],
-          prev_ids: []
+          next_ids: next_ids,
+          prev_ids: prev_ids
         },
         created_at: Time.now.utc,
         updated_at: Time.now.utc

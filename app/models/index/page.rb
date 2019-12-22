@@ -8,4 +8,12 @@ class Index::Page < ApplicationRecord
       self.host ||= Index::Host.find_or_create_by url_string: host_url_string
     end
   end
+
+  def fetch_page
+    agent = Index.mechanize_agent
+    mechanize_page = agent.get(self[:url_string])
+    raise 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
+
+    mechanize_page
+  end
 end

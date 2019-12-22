@@ -5,7 +5,7 @@ module Index
     'index_'
   end
 
-  def mechanize_agent
+  def self.mechanize_agent
     return @agent unless @agent.nil?
 
     @agent ||= Mechanize.new

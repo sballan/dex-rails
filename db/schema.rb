@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_22_215718) do
+ActiveRecord::Schema.define(version: 2019_12_22_221946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,13 @@ ActiveRecord::Schema.define(version: 2019_12_22_215718) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["index_host_id"], name: "index_index_pages_on_index_host_id"
     t.index ["url_string"], name: "index_index_pages_on_url_string", unique: true
+  end
+
+  create_table "index_words", force: :cascade do |t|
+    t.text "value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["value"], name: "index_index_words_on_value", unique: true
   end
 
   create_table "indexing_batches", force: :cascade do |t|

@@ -12,8 +12,8 @@ class Host < ApplicationRecord
   validates :failure_retry_seconds, presence: true
   validates :invalid_retry_seconds, presence: true
 
-  value :crawl_started_at, marshal: true, expireat: -> { Time.now + 1.day }
-  counter :crawls_since_started, expireat: -> { Time.now + 1.day }
+  value :crawl_started_at, marshal: true, expireat: -> { Time.zone.now + 1.day }
+  counter :crawls_since_started, expireat: -> { Time.zone.now + 1.day }
 
   set :urls_to_fetch
   set :urls_fetched
@@ -39,7 +39,7 @@ class Host < ApplicationRecord
 
     usage = crawls_since_started.value * self[:limit_time]
 
-    (crawl_started_at.value + usage) > Time.now
+    (crawl_started_at.value + usage) > Time.zone.now
   end
 
   def found?

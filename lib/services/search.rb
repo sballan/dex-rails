@@ -13,7 +13,7 @@ module Services
       hit_set = Set.new
       PageWord.where(word_id: word_ids).in_batches.each_record do |page_word|
         page_hit = process_page_hit(page_word)
-        hit_set << page_hit unless page_hit.blank?
+        hit_set << page_hit if page_hit.present?
       end
 
       hit_set.to_a.sort_by do |hit|

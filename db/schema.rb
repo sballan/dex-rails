@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_191_215_002_308) do
+ActiveRecord::Schema.define(version: 20_191_222_213_751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
@@ -44,6 +44,13 @@ ActiveRecord::Schema.define(version: 20_191_215_002_308) do
     t.integer 'invalid_retry_seconds', default: 86_400
     t.integer 'success_retry_seconds', default: 10
     t.index ['host_url_string'], name: 'index_hosts_on_host_url_string', unique: true
+  end
+
+  create_table 'index_hosts', force: :cascade do |t|
+    t.text 'url_string'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.index ['url_string'], name: 'index_index_hosts_on_url_string', unique: true
   end
 
   create_table 'indexing_batches', force: :cascade do |t|

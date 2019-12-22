@@ -25,9 +25,7 @@ class IndexingBatch < ApplicationRecord
 
   # @param [::Page] page
   def download_page(page, force = false)
-    if !force && page.download_success && page.download_success > 1.day.ago
-      raise Page::DownloadTooRecent, "Already successfully downloaded today: #{page.url_string}"
-    end
+    raise Page::DownloadTooRecent, "Already successfully downloaded today: #{page.url_string}" if !force && page.download_success && page.download_success > 1.day.ago
 
     mechanize_page_string = begin
       Rails.logger.debug "Running mechanize_page_string: #{self[:url_string]}"
@@ -47,7 +45,6 @@ class IndexingBatch < ApplicationRecord
   # @param [::Page] page
   def parse_page(page)
     page_content = begin
-
       page_text = nil
 
       Services::Cache.read("#{cache_key}/#{page.cache_key}/download").tap do |downloaded_page|
@@ -78,7 +75,9 @@ class IndexingBatch < ApplicationRecord
       extracted_words.reject!(&:blank?)
       links = mechanize_page.links
       links&.map do |mechanize_link|
-        mechanize_link.resolved_uri.to_s rescue nil
+        mechanize_link.resolved_uri.to_s
+      rescue StandardError
+        nil
       end.compact
 
       index_data_map = {}.tap do |map|
@@ -131,18 +130,17 @@ class IndexingBatch < ApplicationRecord
     words_strings = parsed_page[:index_data_map].keys
     word_objects = Word.fetch_persisted_objects_for(words_strings)
 
-
     index_data_map = parsed_page[:index_data_map]
 
     page_word_objects = word_objects.map do |word_object|
       index_entry = index_data_map[word_object[:value]]
 
       next_ids = index_entry[:next_values].map do |word_value|
-        word_objects.find{|o| o[:value] == word_value}[:id]
+        word_objects.find { |o| o[:value] == word_value }[:id]
       end
 
       prev_ids = index_entry[:prev_values].map do |word_value|
-        word_objects.find{|o| o[:value] == word_value}[:id]
+        word_objects.find { |o| o[:value] == word_value }[:id]
       end
 
       {

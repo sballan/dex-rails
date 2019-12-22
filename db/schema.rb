@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_22_221946) do
+ActiveRecord::Schema.define(version: 2019_12_22_222417) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,17 @@ ActiveRecord::Schema.define(version: 2019_12_22_221946) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["url_string"], name: "index_index_hosts_on_url_string", unique: true
+  end
+
+  create_table "index_page_words", force: :cascade do |t|
+    t.bigint "index_page_id", null: false
+    t.bigint "index_word_id", null: false
+    t.jsonb "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["index_page_id"], name: "index_index_page_words_on_index_page_id"
+    t.index ["index_word_id", "index_page_id"], name: "index_index_page_words_on_index_word_id_and_index_page_id", unique: true
+    t.index ["index_word_id"], name: "index_index_page_words_on_index_word_id"
   end
 
   create_table "index_pages", force: :cascade do |t|
@@ -131,6 +142,8 @@ ActiveRecord::Schema.define(version: 2019_12_22_221946) do
     t.index ["value"], name: "index_words_on_value", unique: true
   end
 
+  add_foreign_key "index_page_words", "index_pages"
+  add_foreign_key "index_page_words", "index_words"
   add_foreign_key "index_pages", "index_hosts"
   add_foreign_key "page_words", "pages"
   add_foreign_key "page_words", "words"

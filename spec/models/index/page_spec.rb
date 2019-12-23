@@ -26,4 +26,15 @@ RSpec.describe Index::Page, type: :model do
     expect(page.downloads.first).to be
   end
 
+  context 'downloading' do
+    it 'can download a page' do
+      page = Index::Page.create!(url_string: 'http://www.example.com')
+
+      VCR.use_cassette('page/download_01') do
+        page.fetch_page
+      end
+
+      expect(page.downloads.first).to be
+    end
+  end
 end

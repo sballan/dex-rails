@@ -32,15 +32,6 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop-rails'
   gem 'sqlite3', '~> 1.4'
-
-  # gem 'rack-mini-profiler'
-
-  # For memory profiling
-  # gem 'memory_profiler'
-
-  # For call-stack profiling flamegraphs
-  # gem 'flamegraph'
-  # gem 'stackprof'
 end
 
 group :development do
@@ -55,7 +46,9 @@ end
 group :test do
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
+  gem 'vcr'
   gem 'webdrivers'
+  gem 'webmock'
 end
 
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

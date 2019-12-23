@@ -1,6 +1,8 @@
 class Index::Page < ApplicationRecord
   belongs_to :host, class_name: 'Index::Host', foreign_key: :index_host_id
 
+  validates :url_string, presence: true
+
   before_validation do
     if host.blank?
       uri = URI(self[:url_string])

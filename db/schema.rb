@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_191_223_000_249) do
+ActiveRecord::Schema.define(version: 2019_12_23_020012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,14 @@ ActiveRecord::Schema.define(version: 20_191_223_000_249) do
     t.integer "invalid_retry_seconds", default: 86400
     t.integer "success_retry_seconds", default: 10
     t.index ["host_url_string"], name: "index_hosts_on_host_url_string", unique: true
+  end
+
+  create_table "index_downloads", force: :cascade do |t|
+    t.bigint "index_page_id", null: false
+    t.text "content", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["index_page_id"], name: "index_index_downloads_on_index_page_id"
   end
 
   create_table "index_hosts", force: :cascade do |t|
@@ -144,6 +152,7 @@ ActiveRecord::Schema.define(version: 20_191_223_000_249) do
     t.index ["value"], name: "index_words_on_value", unique: true
   end
 
+  add_foreign_key "index_downloads", "index_pages"
   add_foreign_key "index_page_words", "index_pages"
   add_foreign_key "index_page_words", "index_words"
   add_foreign_key "index_pages", "index_hosts"

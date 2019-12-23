@@ -14,10 +14,9 @@ class Index::Page < ApplicationRecord
   end
 
   def fetch_page
-    agent = Index.mechanize_agent
-    mechanize_page = agent.get(self[:url_string])
+    mechanize_page = Index.fetch_page(url_string)
     raise 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
 
-    mechanize_page
+    downloads.create!(content: mechanize_page.body)
   end
 end

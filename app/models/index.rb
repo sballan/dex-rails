@@ -12,4 +12,8 @@ module Index
     @agent.robots = true
     @agent
   end
+
+  def self.fetch_page(url_string)
+    mechanize_agent.get(url_string)
+  end
 end

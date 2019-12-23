@@ -1,6 +1,7 @@
 class Index::Page < ApplicationRecord
   belongs_to :host, class_name: 'Index::Host', foreign_key: :index_host_id
   has_many :downloads, class_name: 'Index::Download', foreign_key: :index_page_id, dependent: :destroy
+  has_many :page_words, class_name: 'Index::PageWord', foreign_key: :index_page_word_id
 
   validates :url_string, presence: true
 

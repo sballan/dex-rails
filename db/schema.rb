@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_191_223_020_012) do
+ActiveRecord::Schema.define(version: 20_191_224_044_012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,6 +83,8 @@ ActiveRecord::Schema.define(version: 20_191_223_020_012) do
     t.jsonb "data"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "index_success"
+    t.datetime "index_failure"
     t.index ["index_host_id"], name: "index_index_pages_on_index_host_id"
     t.index ["url_string"], name: "index_index_pages_on_url_string", unique: true
   end

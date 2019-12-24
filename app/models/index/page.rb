@@ -3,7 +3,7 @@ class Index::Page < ApplicationRecord
   has_many :downloads, class_name: 'Index::Download', foreign_key: :index_page_id, dependent: :destroy
   has_many :page_words, class_name: 'Index::PageWord', foreign_key: :index_page_word_id, dependent: :destroy
 
-  scope :not_downloaded, -> { where(downloaded_at: nil) }
+  scope :not_downloaded, -> { where(download_success: nil) }
 
   validates :url_string, presence: true
 

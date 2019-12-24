@@ -26,6 +26,17 @@ RSpec.describe Index::Page, type: :model do
     expect(page.downloads.first).to be
   end
 
+  describe '.not_downloaded' do
+    it 'returns correct pages' do
+      Index::Page.create!(url_string: 'http://www.abc.com', download_success: Time.now.utc)
+      page = Index::Page.create!(url_string: 'http://www.xys.com')
+
+      pages_not_downloaded = Index::Page.not_downloaded.to_a
+
+      expect(pages_not_downloaded).to eql([page])
+    end
+  end
+
   describe '#fetch_page' do
     it 'can download a page' do
       page = Index::Page.create!(url_string: 'http://www.wikipedia.org')

@@ -46,7 +46,7 @@ class Index::Download < ApplicationRecord
   end
 
   def page_text
-    Html2Text.convert mechanize_page.body
+    Html2Text.convert mechanize_page.body.force_encoding 'UTF-8'
   end
 
   def links

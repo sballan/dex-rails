@@ -26,6 +26,13 @@ RSpec.describe Index::Page, type: :model do
     expect(page.downloads.first).to be
   end
 
+  it 'can have page_words' do
+    page = Index::Page.create!(url_string: 'test.com')
+    page.page_words.create(word: Index::Word.create(value: 'test'))
+    page.save!
+    expect(page.page_words.first).to be
+  end
+
   describe '.not_downloaded' do
     it 'returns correct pages' do
       Index::Page.create!(url_string: 'http://www.abc.com', download_success: Time.now.utc)
@@ -34,6 +41,20 @@ RSpec.describe Index::Page, type: :model do
       pages_not_downloaded = Index::Page.not_downloaded.to_a
 
       expect(pages_not_downloaded).to eql([page])
+    end
+  end
+
+  describe '#most_recent_download' do
+    it 'returns correct download' do
+      page = Index::Page.create!(url_string: 'http://www.soundcloud.com')
+
+      VCR.use_cassette('pages/soundcloud') do
+        page.fetch_page
+        page.fetch_page
+      end
+
+      expect(page.downloads.count).to eql(2)
+      expect(page.most_recent_download.id).to eql(page.downloads.pluck(:id).max)
     end
   end
 
@@ -49,17 +70,16 @@ RSpec.describe Index::Page, type: :model do
     end
   end
 
-  describe '#most_recent_download' do
-    it 'returns correct download' do
-      page = Index::Page.create!(url_string: 'http://www.soundcloud.com')
+  describe '#index_page' do
+    it 'can index a page' do
+      page = Index::Page.create!(url_string: 'http://www.wikipedia.org')
 
-      VCR.use_cassette('pages/soundcloud') do
-        page.fetch_page
+      VCR.use_cassette('pages/wikipedia') do
         page.fetch_page
       end
 
-      expect(page.downloads.count).to eql(2)
-      expect(page.most_recent_download.id).to eql(page.downloads.pluck(:id).max)
+      page.index_page
+      expect(page.page_words.first).to be
     end
   end
 end

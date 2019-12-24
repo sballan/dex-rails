@@ -4,6 +4,7 @@ class Index::Page < ApplicationRecord
   has_many :page_words, class_name: 'Index::PageWord', foreign_key: :index_page_id, dependent: :destroy
 
   scope :not_downloaded, -> { where(download_success: nil) }
+  scope :not_indexed, -> { where(index_success: nil) }
 
   validates :url_string, presence: true
 

@@ -44,6 +44,17 @@ RSpec.describe Index::Page, type: :model do
     end
   end
 
+  describe '.not_indexed' do
+    it 'returns correct pages' do
+      Index::Page.create!(url_string: 'http://www.abc.com', index_success: Time.now.utc)
+      page = Index::Page.create!(url_string: 'http://www.xys.com')
+
+      pages_not_indexed = Index::Page.not_indexed.to_a
+
+      expect(pages_not_indexed).to eql([page])
+    end
+  end
+
   describe '#most_recent_download' do
     it 'returns correct download' do
       page = Index::Page.create!(url_string: 'http://www.soundcloud.com')

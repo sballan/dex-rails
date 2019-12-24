@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Index::Download < ApplicationRecord
   belongs_to :page, class_name: 'Index::Page', foreign_key: :index_page_id
 
@@ -9,7 +11,7 @@ class Index::Download < ApplicationRecord
     errors.add(:base, 'Mechanize page must be valid') unless mechanize_page.is_a?(Mechanize::Page)
   end
 
-  def generate_index
+  def generate_words_map
     word_values = page_text.split /\s/
     extracted_words = word_values.map do |word_value|
       word_value.downcase
@@ -57,7 +59,7 @@ class Index::Download < ApplicationRecord
 
   # @return [Mechanize::Page]
   def mechanize_page
-    return nil unless content.present?
+    return nil if content.blank?
 
     Mechanize::Page.new(
       nil,

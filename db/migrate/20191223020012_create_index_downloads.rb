@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateIndexDownloads < ActiveRecord::Migration[6.0]
   def change
     create_table :index_downloads do |t|

@@ -1,0 +1,456 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://www.soundcloud.com/robots.txt
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Mechanize/2.7.6 Ruby/2.6.3p62 (http://github.com/sparklemotion/mechanize/)
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Host:
+      - www.soundcloud.com
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - '300'
+  response:
+    status:
+      code: 301
+      message: Moved Permanently
+    headers:
+      Content-Length:
+      - '0'
+      Connection:
+      - keep-alive
+      Date:
+      - Tue, 24 Dec 2019 00:44:39 GMT
+      Location:
+      - https://soundcloud.com/robots.txt
+      Server:
+      - am/2
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 7787c17f7e39468ee68e2078b8b5894e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - JFK51-C1
+      X-Amz-Cf-Id:
+      - zU5EYfVlYpaJsSYI8Qe67HLlTHwxwUw8QP7KUEwl27aQNxYLcrvxnw==
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Tue, 24 Dec 2019 00:44:39 GMT
+- request:
+    method: get
+    uri: https://soundcloud.com/robots.txt
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Mechanize/2.7.6 Ruby/2.6.3p62 (http://github.com/sparklemotion/mechanize/)
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Host:
+      - soundcloud.com
+      Referer:
+      - https://www.wikipedia.org/
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - '300'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/plain; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - sc_anonymous_id=285037-24264-122614-711709; path=/; expires=Fri, 21 Dec 2029
+        00:44:39 GMT; domain=.soundcloud.com
+      - sclocale=en; path=/; expires=Wed, 23 Dec 2020 00:44:39 GMT; domain=.soundcloud.com
+      X-Pants:
+      - distant-towel
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - private, max-age=0, no-cache, no-store
+      X-Frame-Options:
+      - SAMEORIGIN
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Tue, 24 Dec 2019 00:44:39 GMT
+      Last-Modified:
+      - Thu, 19 Dec 2019 10:44:04 GMT
+      Etag:
+      - W/"45-3157893232"
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Server:
+      - am/2
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 88c99b4a125fda7fb36df6bd93b5daf1.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - JFK51-C1
+      X-Amz-Cf-Id:
+      - ffkMgyt38frEsYbbI030WcvvR4GQZbK9mf_hJa27WATFOyv8tGeHAw==
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAEAwstTi3STUxPzSuxUtDicsksTszJyS+34grOLEnNTSywUsgoKSkottLXT9QtM9IrzktJTsnTS87P1S+GKNArqSjhAgA7HP8cRQAAAA==
+    http_version: 
+  recorded_at: Tue, 24 Dec 2019 00:44:39 GMT
+- request:
+    method: get
+    uri: http://www.soundcloud.com/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Mechanize/2.7.6 Ruby/2.6.3p62 (http://github.com/sparklemotion/mechanize/)
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Host:
+      - www.soundcloud.com
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - '300'
+  response:
+    status:
+      code: 301
+      message: Moved Permanently
+    headers:
+      Content-Length:
+      - '0'
+      Connection:
+      - keep-alive
+      Date:
+      - Tue, 24 Dec 2019 00:44:39 GMT
+      Location:
+      - https://soundcloud.com/
+      Server:
+      - am/2
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 f800b68f44c427976fe7546b255b6206.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - JFK51-C1
+      X-Amz-Cf-Id:
+      - H_2pDZugwbcoWxQlqMWuz7niMlrDGp52R6Cn-JMrx-4vagmniYP85g==
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Tue, 24 Dec 2019 00:44:39 GMT
+- request:
+    method: get
+    uri: https://soundcloud.com/robots.txt
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Mechanize/2.7.6 Ruby/2.6.3p62 (http://github.com/sparklemotion/mechanize/)
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Cookie:
+      - sc_anonymous_id=285037-24264-122614-711709; sclocale=en
+      Host:
+      - soundcloud.com
+      Referer:
+      - http://www.soundcloud.com/
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - '300'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/plain; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Pants:
+      - distant-towel
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - private, max-age=0, no-cache, no-store
+      X-Frame-Options:
+      - SAMEORIGIN
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Tue, 24 Dec 2019 00:44:40 GMT
+      Last-Modified:
+      - Thu, 19 Dec 2019 10:44:04 GMT
+      Etag:
+      - W/"45-3157893232"
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Server:
+      - am/2
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 0abfc04b3868b6760be5e12dccdfc7d4.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - JFK51-C1
+      X-Amz-Cf-Id:
+      - ASqijTZnHb42pJIq3CfoKK75SdxkGW4RWuUA5KySfpYVxWy-MrNmYQ==
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAEAwstTi3STUxPzSuxUtDicsksTszJyS+34grOLEnNTSywUsgoKSkottLXT9QtM9IrzktJTsnTS87P1S+GKNArqSjhAgA7HP8cRQAAAA==
+    http_version: 
+  recorded_at: Tue, 24 Dec 2019 00:44:40 GMT
+- request:
+    method: get
+    uri: https://soundcloud.com/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Mechanize/2.7.6 Ruby/2.6.3p62 (http://github.com/sparklemotion/mechanize/)
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Cookie:
+      - sc_anonymous_id=285037-24264-122614-711709; sclocale=en
+      Host:
+      - soundcloud.com
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - '300'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/html
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Pants:
+      - distant-towel
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - private, max-age=0, no-cache, no-store
+      X-Frame-Options:
+      - SAMEORIGIN
+      Server-Timing:
+      - rollouts; dur=6.468993; desc="api-v2/rollouts", geoip; dur=1.387811; desc="geoip/geoip",
+        experiments; dur=8.346781; desc="api-v2/experiments", privacySettings; dur=8.345672;
+        desc="api-v2/privacySettings", geoip; dur=1.976683; desc="geoip/geoip"
+      Date:
+      - Tue, 24 Dec 2019 00:44:40 GMT
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Server:
+      - am/2
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 4fe583422d0b309b9b1d4505e54b137c.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - JFK51-C1
+      X-Amz-Cf-Id:
+      - MpEKJgRD8_5UGDnkMZfLVMK19jczMl9bNbe48VpeqC9AId-LKkyG-A==
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAEA5zRsU7DMBAG4D1PYTzjVAUGhjhSVTowwQASjFf7als4dupzgvr2mAqxMBB3suXTd//J1109PG1f3p93zObB903TfZ/MQzCSY+B9eUDQfcNYN2AGpiwkwiz5lA/ivtQZ+63ZnEeBx8nNkr+J143YxmGE7PYeOVMxZAwFPu4kaoPXyqY4oFyXHj9NvAsfLKGXXAcSY8IDZmU5s+Um+WpF+eSxpaCVDq2Kwzm9+0+BmG/q0ejOLE4lzcdJL8+jfUsqJlSQdEJCSMpWaFRTwvY4QciEacblFOfyvz4ag6mlCwaH0V3kiHxrYjQeBQTwp+wULZ/arauX4+r36W7rU+6qyaejajPDX/IFAAD//91b63LbOJb+P08BMzVeKU3qfo+VzHQmM5tsupMtZ390OS4VRIIS2xTBISnLbstV+w77hvsk+x2AF0iWHOeyfyaVskQQOAc49wv0BT2IgxsRPhQR0sMsyELx8py4/5rElv3vf/8Pex+kUD2WSeYnQrDVOg1cxiOPxdJzeZqlTEasWnPW1FBILXOlL3QXUi0Tz2ZKvFJ8whqI/NFmfO0F0mZZwt0rvFR48pdKhywWcWi8dSVuNwCTav1VZkW/II1PEpEY1kImwSIgO5TbCGN2LnNpkAnnWiSBH7gwNjIyVnu/tV4Hi3/+MnobrefpbLlIfvtlc+X88Q93+R+b5Prde/f67ewfo0G3/Z8HUVwHYhPLJDNAbgIvW049cR24wlEP9iqIgtV65aQuD2HQ7BW/2XleQ5HVSw5LOI2kRnV24jgXgc/evrkkK/qA1lmyhtnUhPnl/HzFk+wTX6QfE6XnH2GGg2ihSPhgqc/DFGtNexys+EJkUoZznqhFZycXIvIC/9JxdolbGur2uN8ajgft4XhksTiRsUiy26nlzyc8jmeBp8For1AISCVF5hK5mBCXZnSYp6/KNkGWiUQt/fpV2OOE8E2CeCmjg2i73UG332332+ZeC6y0PvAeWX34qObyHD0/SKmnIT+89omotYLEIb89RD44UNPcwx4kEkw1OG2eBaTYB6fMVO6bU9eBfES5t7tZhZZ25HrAYsqiTK1q46x8cxvDJIDaYa6+zQqQJ1I3CWJS6p8IphJUbZK0XhgTDBU1sAQp4w8NHkuzRHCo7YKBOpkvkxXLljxjoYAxvJVrFpYmcxWEIfDDRvowe9EihRGVK8YTsrFYJRhsWQibKBO2jkPJPQKQMLmJGuw8g9bmwAhbJDcn1kt9gkqjTDqbIlvFTNWJHl9dCWy1thK0pyCGwFVLvwrtzsqvQWrI1TehPrj+iHQfJQFFa8bJ0/UKBvd2FvJkIWbKeB6nvBJuY3FFtm9xv8fx/GtJuyZqxXHyVumk2dyL15s8Rb6RNtX0tEnuppmW0a2zjvx1EjZicoX7esXDSSBT5a1IrQ5y6NFVaYY4njxdtctHBBvociP6DSiLlTFiJ3hqA+NTJTk/LahhLK4oBcrGANzka9isCDG6jpUOEa3YyyOglkjdHpIOfj6DOTfwb8ScPP/BqbvgC/ZXO6Yconlw5f+3wuEc/xq6hoP8SDVzUuSlyE4PaluBa5KqFHZ2mL3fot07aCkpqRIkl0cygixD5nUkclyMqkU8RFgZcYglWwkv4FNLRuEtQ6whkCZB+lkNIbwO7ids0GvFN/V9+DuxUy6oBzHobeUq5VBU2WweVmnDrDVz/XoEIixbDq00SQ8BVCmcjpeMMMt5xCSWiZ9etUrNdZREZEFsKPl7vo7cpZFBGuHmIQifglC8pXzEgFHw7XH5QJgZID9Jm5sgGjkdzx0Pe7w94loiH902IX0tQ2kml898v99vtb6w3ZSCuMPSvGus8vhUMW1XGp94Kp8jq5SR03G557V7c2/ewHMeStMbvdNvR6CEZtDxfHfki6Gimo7TicHCyeTaXSoKfy8iP1wHnjPviSEf9OajuYFKv8pPA5YR13SYz8h5TK1M3GTN3/k116PWyxMf8kVJQK1+d80Txm1pixfFIAtqsn6XCLAoYrKRiTSr8fo9n0JGPLlpRCDqgsOTNygP/+sCzq+RyfdyI5LXPBW1+guCmdiRndnp9Bo5EGudTIvVlPXy01PrQs5/F27GPtDzpTXdnQCA51mCCL9Wt+Mpb6w4Cpe15udUxsnnZu2i5Ywvf6p/bjTrtjcNak1d+8STS09wkldBhqfV9MQ7PcVIyn2eBBjZTE9SNbJKA4Fnf3riqueFcK9ks/4imcavYirJvo2yWnzRvrTbrfqkllWbqKkjbDXKrYa89QPUWuTNlsDWPzdffU6f1z43Xn32fsIH/taf15tBvX56WosqSCiypOACHQhzcCCaUmGPCuxZNZZddPSOonUYKkIv6cQrOYc6bnOruNUpOj6kt01vV/MAVj3dRvIq4Nt00NpSCjuX8kp9gTqSLODsPrYnpjVZ7bCWn+vRI7XPZCMU0SJbnp722mfTknwy32zdTk5PT/C2Bm6cxKenyVmvtd0CHT2ctMF8sd2uaHy03W7os93ebsEofOlut2pFZ0jUy2VwNkvdGZ+jkvTXOJ6etOr3ELuzphZwVUPPFaEy+KrYnS6FQPFp15jsl8GbborwGNX1hEiDIuxo4LeGrj/ucdHnvfFg3uk1MEebJ1K3p2A5YrIIF4yFM+p7rbkYtf3hsNsd8fmcdzs5ku9HELRHkRNKKqc5KapA7hIFNN9tzUcj3vZbHuyK77bb3XaJ8U9nTd2nOJtL71a1K7zgmgWeKi0oa0ZmhhoIutjGWPM5+/Thbx8m7G3khmtPIJdHtQDnY9cBZ5lYUWmAknYk9tBQCszZ8ybIR/+az/MvjH1CCQBTXbGUoScSJqIlj1yRqtoArIUrgmvhMaoMELQsWKFiGmQMNTrJ8H4VoOYQCwkDzDZLicqCYKjQYiqHPVtnHnjqsXkiNzBf2EyJmCZ7Mvq3jC35tWDvzoGaKoyoSkiUVwRTBQ3Ud9VOiDxYT9FNJIEdkzIesjlaPVeMMoMGBQv63wfsXy0CTMP1M9BHOUNCQcQiYKhGJrd4wn4Fqo4siNgzrGGoNqJmgpebhMp4UQ68pGAj39BdiVUVUyes3Wr9+UU5OAfZF6rWMmHPut1u9WYpgsUym7DeIL4pRu+LM+TQZzP0QySrcBwDd3jheyrEH16MIneUwnLAmzDEBrWnxS/6zE1VDXdEdwD1HHbmPnnHOtjiJCIW4Fq7E9+wdrs6F2PVxp00+EPg2CPM6WBicXbGvCAlSzkBU6V7VY0fohRjObkH4wrEcSpMfOmu04O0cFyKqiYsWcx5rdPv22zYsVkL/xujerUJSDLMDjbeKsZKbM80WYhZWkfuSvajCIPyP4Sii9MidZXV8vIEbUMATEJNvoIxhBk2xuPJldPrj3stLrper7EI/DpzwWNoTsmeYv8mrpwptBVm7qc8419UpsFqjnb2DoqPTt5EUO0cJyGvNmGduo3sAy/ROpThmjwdTj/ueHFw6A3GkZwYfNkR/D353dmwygu/hkSm7P6lc+OIvj/nvUFr4Cnxrahyn3NPf8LLVVb3jIxyItEFseY8ilSnJ0SBZ2rl1gABfipCBFo4twN51vYsXcoN89H18thC8QgffzgI78SNoxfmFh42njC4JszZLCBMLISgRhmHDNJ3H/GI0oBy5eG1ofCpLOxnxrwjM8nSPJiJubxoYJdl8H+n6sn+LslSKYaBBogUSBzn8gZZqROgY3NetvTOmrxwYWStz5o4cTWw/1h4wT0VK7ED/DLwPGr17yw1HoyvirNfiNbzkAdFu09wdVD7WhGpI3wP/NrJoZhIB/aiiLo9WJsVBerwIm9CQV9/vn3r1XIxKS2FVX8hKAhsKI7/qrqLVv3+3h6I7m6AhTwj33wljd8ZAzTQq5TJR7jOQsQqu5Ub1/4ItYNKMwpr1lKmrBqPJYpkStNx+wF24FoY75AKwrkiN4vJ1+3Aq5zC1yiy2nbaROILHUb23JoP+WjfBfVbf2a7m6e0zOFhsIBB0iax2qTyhvkReBiydoqmR4SrD8WU0g5qon2iNrVhtTRhIO9ZJlcUAphU86G2uX3tGi/2QWJ7BkRCD9ugQ4QOfGWxE4ZarvJXzwaDQTVoIOkcR/LzGhtEL+huz0Fp7hzc3bN1TBHczzp++0WkKQTGAFC44ZaBlbHvl5RdGn6XpOSxpzN2Pa8nBp6vKgdmwELS0jaPzxBAHxeXMlBB8a4U9ZKfhynWWGnSfXqMzzuRwBGWFsQtpa1fCceX9oB6QkShAtnpY1LwML4pfH9VVGx3SLfqlRg9Zkt23LYO/kZmiHzE3yoR1TYP2bTqoxYuZ99wKd9mes6DE+Br4h0ISoutl+9QqjnX8JETFE77rBlrr7S/iPgHr6O4A2uyhGf9DR3XSOjERecwzACKoA+VG6O8WIE2nL3acq6fpa8ufS+F5yi8bjabhkbgVAUm3WdgqPLB20ytmUqJTAc5V1pPm9bfHIrl1rh+dk5xyUow+sAu860HWemiS9eZfzlrFqxQrezSKZWjDycoH1948UO2RDOv5IypJtixUsOczEoYQOuE4Y6ZylyKrDJIKY1EWTq/rofkIDMLug12Nk80Oz+GAlUzJJ5aE3B1SFBrnKCm65guy4CPOdwU64rop0iQliKMzXsHVDtfuk2UWAM3FGmz3YZj6vYHvW5r5HwS7lKV9xEO415hoiIBFDJ+JWEhSK9yUiuRwPlMIS62qJWVaIHyorPsEiMfkGVnn5AU3VRWoqErZwje9gREdaGm1mt1j9F6qT9pP2y7e2yAy+tS6lrcMUB/1zU562X+5QgoSsjVrcC8Snh0Y+eqiAgpVZ9HoOlgLG2sAjeRqfQzdeQA4emR46LOiOaJyNibG9x2oMtaLx8MlUxRoWku+9oe6b87Qq00dzajwgiixVLx9m0Qsa0IVYnTpcSriTqiKJmMW6XnMkluT2A20DJW5YkN5eqbBHc4cgNiCosGcsA2qQ2fxS/fqoshSANFhgsfV9QRjnSewtYRqiIovFClqNCoonADAVV2sLIEj9ssyGGeveAs2tzs1/8OaNBDblHlK0tuHb5AxgMWaftKS5/GnNxhHKnIHwrhq2rn0ej9oPmqN3RBMw8KkBlS9QKRvVkfLSyl5sbjmyvSjaIe8obC9C/mHsl+7mGLafIg/1BiUslq3ZYHJu3nWipJkft5igJlZA+WLc00ppJ25DMPc6qcWupsdruPdMfOJ8Eg04Gn5oxHaKmls7DSzVjGa1x6aerrWSKFZFGsPrU+6hf5vS28eLk/ogSrMMS6r6NzU9LWnGVp4iLXf/ymR7vr+PNez5v3W0638Tu2QKYp1TdBkaVqUMWlRQCnzE4Jhvm9wPgECc77GmzKrHZ/OBj2O63R0DpAM4WkAGxsij3lWP22gxJs3xuI/FjGUZQ9zEn0tXCRxXnoY7Z6QlPrB4HFbv1hy+0MvB8KtuP0xLw38sbDHwoWouJ2vKHbHrZ/KNze2Jn3XS7EsHsQ7p9I9nKJMPqUwo5UrUNMRWOOOlWN2l8Ys63COKGDSJKJyClX27zF8A53DOP6gbHaxaV915qIe1gT1NlVIzSbRo1EeGtXVDUWhTrvhlKYEOGiTw0/l1iukbLU7+2Ly3rDD+gGxM4aOyt7qFlDVdY++DVRR6sruqc2paVaWMhk+SwRy1tPlSuj2Up66xD1Dxiv6d39C3nhXk6FXbS9zDMV5tUc225pN/E6XdYucDxpX2B9seesfnkJ07e3S9ut3xU0ZBI7LDq/QUN1Iqrp4EBOhoiaEri1kkj0PED0+/p9CSIhENQAjqYE7UWx5FUxowY49D4DEfiLqIHSYvZ3+l0KVbdg013wYGfM9lDAzATbG67b4JbYMFGL7DvVcpyctOzZTNNS4AF0znZBTV2MoCREEXetfg/mq/b39G8oKDRwlxTd5mB6YVGpeI0+04wOZ9kW0hj8RQEOf1E9Ol/PwSYR4imHZV2+EA3cen3D0aUuDwpCIGLIiZHUXJTVAq8OcWsQ2w/Oj0AyUBMiBkCQoHs82Bd3Fq7MTTrttm1psbMmF73xpW0RHHy/s1AjQjtrlucq6Yyu1M5wlU/SuPBm1KlPrYm6x44zFL8qmck4QzXXmtDdeACXq9Wa0gOqnaV7L3X4Cljcg33PAuqolVNywKFYBCkV3HCzYnJxeX95b+u9t9udwdHNuyjFglAzF0S1JtZ/nYOwxZi6VIOxCJfePLr+i+sIiu4LhcP69R1NDrJbLDzHT4TW6KpgBAVANOMKiK1ha9zDKO0sQ2fSmvRajeFo2B8PB/1Bp483CGLzV86w12j1x+PxsN8f9cfdYd84RqvbM47Rbxk82Jk1PDbLuu7MUDyIZ/hR0YpHs4zfzPxAhF46y7O9ghmYCK7NIOI4hgqNjTdUwJ8hIMEdCcS0YpYHtjkfsXT5T4CFIaEbl1RQLQS1mqFAqPIo8ZQYmqWQhRm0mlYayGARhVgpYtIENI9xVQKJhYKFY1+aoSUax7pjjAay+gXc/wGtsxQHEjcAAA==
+    http_version: 
+  recorded_at: Tue, 24 Dec 2019 00:44:40 GMT
+- request:
+    method: get
+    uri: http://www.soundcloud.com/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Mechanize/2.7.6 Ruby/2.6.3p62 (http://github.com/sparklemotion/mechanize/)
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Cookie:
+      - sc_anonymous_id=285037-24264-122614-711709; sclocale=en
+      Host:
+      - www.soundcloud.com
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - '300'
+  response:
+    status:
+      code: 301
+      message: Moved Permanently
+    headers:
+      Content-Length:
+      - '0'
+      Connection:
+      - keep-alive
+      Date:
+      - Tue, 24 Dec 2019 00:44:40 GMT
+      Location:
+      - https://soundcloud.com/
+      Server:
+      - am/2
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 e792582e94d051796ee83e4a94038f8e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - JFK51-C1
+      X-Amz-Cf-Id:
+      - IfDNE0sYU1wYdj_Y56h-XhR7bS8vqckT4hgCPGmlRMAnJbG53zrsIQ==
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Tue, 24 Dec 2019 00:44:40 GMT
+- request:
+    method: get
+    uri: https://soundcloud.com/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Mechanize/2.7.6 Ruby/2.6.3p62 (http://github.com/sparklemotion/mechanize/)
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Cookie:
+      - sc_anonymous_id=285037-24264-122614-711709; sclocale=en
+      Host:
+      - soundcloud.com
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - '300'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/html
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Pants:
+      - distant-towel
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - private, max-age=0, no-cache, no-store
+      X-Frame-Options:
+      - SAMEORIGIN
+      Server-Timing:
+      - rollouts; dur=6.851795; desc="api-v2/rollouts", geoip; dur=1.482799; desc="geoip/geoip",
+        experiments; dur=8.89037; desc="api-v2/experiments", privacySettings; dur=7.73621;
+        desc="api-v2/privacySettings", geoip; dur=2.531768; desc="geoip/geoip"
+      Date:
+      - Tue, 24 Dec 2019 00:44:40 GMT
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Server:
+      - am/2
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 b96e96fef61e11f1c624b4bdd0ad939e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - JFK51-C1
+      X-Amz-Cf-Id:
+      - 78nyDfAGYdo0cW1sJ6wTbUCl24ws6lCt3T6Zu1JBiSIrI27sKRbckg==
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        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
+    http_version: 
+  recorded_at: Tue, 24 Dec 2019 00:44:40 GMT
+recorded_with: VCR 5.0.0

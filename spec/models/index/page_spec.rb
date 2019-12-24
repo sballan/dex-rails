@@ -26,15 +26,29 @@ RSpec.describe Index::Page, type: :model do
     expect(page.downloads.first).to be
   end
 
-  context 'downloading' do
+  describe '#fetch_page' do
     it 'can download a page' do
-      page = Index::Page.create!(url_string: 'http://www.example.com')
+      page = Index::Page.create!(url_string: 'http://www.wikipedia.org')
 
-      VCR.use_cassette('page/download_01') do
+      VCR.use_cassette('pages/wikipedia') do
         page.fetch_page
       end
 
       expect(page.downloads.first).to be
+    end
+  end
+
+  describe '#most_recent_download' do
+    it 'returns correct download' do
+      page = Index::Page.create!(url_string: 'http://www.soundcloud.com')
+
+      VCR.use_cassette('pages/soundcloud') do
+        page.fetch_page
+        page.fetch_page
+      end
+
+      expect(page.downloads.count).to eql(2)
+      expect(page.most_recent_download.id).to eql(page.downloads.pluck(:id).max)
     end
   end
 end

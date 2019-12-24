@@ -13,6 +13,10 @@ class Index::Page < ApplicationRecord
     end
   end
 
+  def most_recent_download
+    downloads.order(created_at: :desc).first
+  end
+
   def fetch_page
     mechanize_page = Index.fetch_page(url_string)
     raise 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)

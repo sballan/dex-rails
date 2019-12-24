@@ -1,7 +1,9 @@
 class Index::Page < ApplicationRecord
   belongs_to :host, class_name: 'Index::Host', foreign_key: :index_host_id
   has_many :downloads, class_name: 'Index::Download', foreign_key: :index_page_id, dependent: :destroy
-  has_many :page_words, class_name: 'Index::PageWord', foreign_key: :index_page_word_id
+  has_many :page_words, class_name: 'Index::PageWord', foreign_key: :index_page_word_id, dependent: :destroy
+
+  scope :not_downloaded, -> { where(downloaded_at: nil) }
 
   validates :url_string, presence: true
 
@@ -22,5 +24,11 @@ class Index::Page < ApplicationRecord
     raise 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
 
     downloads.create!(content: mechanize_page.body)
+
+    self[:download_success] = Time.now.utc
+    save!
+  rescue StandardError
+    self[:download_failure] = Time.now.utc
+    save!
   end
 end

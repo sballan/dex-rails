@@ -1,5 +1,21 @@
 require: rubocop-rails
 inherit_from: .rubocop_todo.yml
+
 AllCops:
   Exclude:
     - 'node_modules/**/*'
+
+Rails/Delegate:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/NumericLiterals:
+  Exclude:
+    - 'db/schema.rb'
+
+Style/RescueStandardError:
+  Enabled: false
+
+

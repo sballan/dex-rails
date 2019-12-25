@@ -43,8 +43,8 @@ RSpec.describe Index::Download, type: :model do
       {
         'words' => {
           word_count: 2,
-          next_values: ['are', 'here'],
-          prev_values: ['here', 'are'],
+          next_values: %w[are here],
+          prev_values: %w[here are],
           first_index: 0,
           all_indexes: [0, 2]
         },

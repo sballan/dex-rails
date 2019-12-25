@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe Index::Download, type: :model do
+  after(:all) do
+    Index::Page.destroy_all
+  end
+
   let(:page) do
     Index::Page.create!(url_string: 'test.com')
   end

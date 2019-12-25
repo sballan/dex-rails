@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Index::Page, type: :model do
+  after(:all) do
+    Index::Page.destroy_all
+  end
+
   it 'can be created with a host' do
     host = Index::Host.create!(url_string: 'test.com')
     page = Index::Page.create!(host: host, url_string: 'test.com')

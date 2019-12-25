@@ -38,10 +38,12 @@ class Index::Page < ApplicationRecord
 
     words_map = most_recent_download.generate_words_map
 
-    Index::Word.upsert_all(
-      words_map.keys.map { |k| { value: k, created_at: Time.now.utc, updated_at: Time.now.utc } },
-      unique_by: :index_index_words_on_value
-    )
+    words_map.keys.each_slice(100) do |slice|
+      Index::Word.upsert_all(
+        slice.map { |k| { value: k, created_at: Time.now.utc, updated_at: Time.now.utc } },
+        unique_by: :index_index_words_on_value
+      )
+    end
 
     page_word_data = []
 
@@ -55,7 +57,7 @@ class Index::Page < ApplicationRecord
       }
     end
 
-    page_word_data.each_slice(1000) do |slice|
+    page_word_data.each_slice(100) do |slice|
       Index::PageWord.upsert_all(
         slice,
         unique_by: :index_index_page_words_on_index_word_id_and_index_page_id

@@ -31,6 +31,8 @@ gem 'newrelic_rpm'
 group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop-rails'
+  gem 'factory_bot_rails'
+  gem 'faker'
   gem 'sqlite3', '~> 1.4'
 end
 

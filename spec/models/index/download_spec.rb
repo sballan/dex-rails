@@ -16,6 +16,28 @@ RSpec.describe Index::Download, type: :model do
     expect(download).to be
   end
 
+  describe '#links' do
+    it 'returns the links' do
+      download = Index::Download.create!(
+        page: page,
+        content: '<html><body><a href="https://www.abc.com">My Link</a></body></html>'
+      )
+
+      expect(download.links).to eql(["https://www.abc.com/"])
+    end
+  end
+
+  describe '#title' do
+    it 'returns the links' do
+      download = Index::Download.create!(
+        page: page,
+        content: '<html><title>My Title</title></html>'
+      )
+
+      expect(download.title).to eql('My Title')
+    end
+  end
+
   describe '#generate_words_map' do
     let(:expected_words_map) do
       {

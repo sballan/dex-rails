@@ -24,7 +24,12 @@ class Index::Page < ApplicationRecord
     mechanize_page = Index.fetch_page(url_string)
     raise 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
 
-    downloads.create!(content: mechanize_page.body.force_encoding('UTF-8'))
+    download = downloads.create!(content: mechanize_page.body.force_encoding('UTF-8'))
+
+    self.with_lock do
+      update_links!(download.links)
+      update_title!(download.title)
+    end
 
     self[:download_success] = Time.now.utc
     save!
@@ -63,5 +68,15 @@ class Index::Page < ApplicationRecord
         unique_by: :index_index_page_words_on_index_word_id_and_index_page_id
       )
     end
+  end
+
+  def update_title!(title)
+    self[:data] ||= {}
+    self[:data]['title'] = title
+  end
+
+  def update_links!(links)
+    self[:data] ||= {}
+    self[:data]['links'] = links
   end
 end

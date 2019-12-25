@@ -61,6 +61,10 @@ class Index::Download < ApplicationRecord
     end.compact
   end
 
+  def title
+    mechanize_page.title
+  end
+
   # @return [Mechanize::Page]
   def mechanize_page
     return @mechanize_page unless @mechanize_page.nil?

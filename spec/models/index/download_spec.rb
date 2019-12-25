@@ -16,6 +16,16 @@ RSpec.describe Index::Download, type: :model do
     expect(download).to be
   end
 
+  it 'can be created with a factory' do
+    download = create(:index_download)
+    expect(download).to be
+  end
+
+  it 'can be created with a factory list' do
+    downloads = create_list(:index_download, 5)
+    expect(downloads).to be
+  end
+
   describe '#links' do
     it 'returns the links' do
       download = Index::Download.create!(

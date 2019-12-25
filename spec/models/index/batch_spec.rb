@@ -16,10 +16,10 @@ RSpec.describe Index::Batch, type: :model do
   describe '#run' do
     let(:pages) do
       [
-        # Index::Page.create(url_string: 'https://harrypotter.fandom.com/wiki/Main_Page'),
+        Index::Page.create(url_string: 'https://harrypotter.fandom.com/wiki/Main_Page'),
         Index::Page.create(url_string: 'https://en.wikipedia.org/wiki/Star_Wars'),
-        # Index::Page.create(url_string: 'https://soundcloud.com/vulfpeck'),
-        # Index::Page.create(url_string: 'https://www.starwars.com/community'),
+        Index::Page.create(url_string: 'https://soundcloud.com/vulfpeck'),
+        Index::Page.create(url_string: 'https://www.starwars.com/community'),
         Index::Page.create(url_string: 'https://fanlore.org/wiki/His_Dark_Materials')
       ]
     end
@@ -29,10 +29,15 @@ RSpec.describe Index::Batch, type: :model do
     end
 
     it 'properly runs' do
-      batch.batch_pages.create(page: pages.first)
+      pages.each do |page|
+        batch.batch_pages.create(page: page)
+      end
 
       VCR.use_cassette('batches/full_run') do
-        batch.run_now
+        ActiveRecord::Base.logger.silence do
+          # do a lot of querys without noisy logs
+          batch.run_now
+        end
       end
 
     end

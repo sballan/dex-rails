@@ -46,7 +46,11 @@ class Index::Download < ApplicationRecord
   end
 
   def page_text
-    Html2Text.convert mechanize_page.body.force_encoding 'UTF-8'
+    doc = mechanize_page.parser
+    doc.xpath('//script').remove
+    doc.xpath('//style').remove
+
+    Html2Text.convert doc.to_html.force_encoding('UTF-8')
   end
 
   def links
@@ -59,9 +63,10 @@ class Index::Download < ApplicationRecord
 
   # @return [Mechanize::Page]
   def mechanize_page
+    return @mechanize_page unless @mechanize_page.nil?
     return nil if content.blank?
 
-    Mechanize::Page.new(
+    @mechanize_page = Mechanize::Page.new(
       nil,
       { 'content-type' => 'text/html' },
       content,

@@ -8,8 +8,8 @@ RSpec.describe Index::PageWord, type: :model do
     Index::Word.destroy_all
   end
 
-  let(:page) { Index::Page.create(url_string: 'test.com')}
-  let(:word) { Index::Word.create(value: 'someword')}
+  let(:page) { Index::Page.create(url_string: 'test.com') }
+  let(:word) { Index::Word.create(value: 'someword') }
   it 'can be created with a page and word' do
     page_word = Index::PageWord.create(page: page, word: word)
     expect(page_word).to be

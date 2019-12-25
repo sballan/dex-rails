@@ -42,9 +42,7 @@ class Page < ApplicationRecord
     agent.robots = true
     mechanize_page = agent.get(self[:url_string])
 
-    unless mechanize_page.is_a?(Mechanize::Page)
-      raise Page::BadCrawl, 'Only html pages are supported'
-    end
+    raise Page::BadCrawl, 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
 
     mechanize_page.body.to_s
   rescue Mechanize::ResponseCodeError => e
@@ -75,9 +73,7 @@ class Page < ApplicationRecord
     agent.robots = true
     mechanize_page = agent.get(self[:url_string])
 
-    unless mechanize_page.is_a?(Mechanize::Page)
-      raise Page::BadCrawl, 'Only html pages are supported'
-    end
+    raise Page::BadCrawl, 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
 
     mechanize_page
   rescue Mechanize::RobotsDisallowedError => e

@@ -36,7 +36,7 @@ Layout/SpaceInsideHashLiteralBraces:
 # SupportedStyles: final_newline, final_blank_line
 Layout/TrailingBlankLines:
   Exclude:
-    - 'rails.rb'
+    - 'solargraph.rb'
 
 # Offense count: 3
 Lint/AmbiguousRegexpLiteral:
@@ -151,7 +151,7 @@ Style/FloatDivision:
 Style/FrozenStringLiteralComment:
   Exclude:
     - 'db/schema.rb'
-    - 'rails.rb'
+    - 'solargraph.rb'
 
 # Offense count: 5
 # Configuration parameters: MinBodyLength.

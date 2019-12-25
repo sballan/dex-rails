@@ -29,10 +29,10 @@ gem 'foreman'
 gem 'newrelic_rpm'
 
 group :development, :test do
-  gem 'rspec-rails'
-  gem 'rubocop-rails'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'rspec-rails'
+  gem 'rubocop-rails'
   gem 'sqlite3', '~> 1.4'
 end
 

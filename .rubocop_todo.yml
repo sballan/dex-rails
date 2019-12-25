@@ -170,12 +170,6 @@ Style/FrozenStringLiteralComment:
     - 'spec/models/index/page_word_spec.rb'
     - 'spec/models/index/word_spec.rb'
 
-# Offense count: 2
-# Configuration parameters: AllowedVariables.
-Style/GlobalVars:
-  Exclude:
-    - 'node_modules/node-sass/src/libsass/extconf.rb'
-
 # Offense count: 4
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:

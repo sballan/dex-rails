@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateIndexPageWords < ActiveRecord::Migration[6.0]
   def change
     create_table :index_page_words do |t|

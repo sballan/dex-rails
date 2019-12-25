@@ -94,7 +94,6 @@ ActiveRecord::Schema.define(version: 2019_12_25_013138) do
   create_table "index_pages", force: :cascade do |t|
     t.text "url_string"
     t.bigint "index_host_id", null: false
-    t.text "links", array: true
     t.datetime "download_success"
     t.datetime "download_failure"
     t.datetime "download_invalid"

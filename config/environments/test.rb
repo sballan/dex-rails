@@ -16,8 +16,6 @@ Rails.application.configure do
     config.hook_into :webmock
   end
 
-  config.active_record.logger = nil
-
   config.cache_classes = false
 
   # Do not eager load code on boot. This avoids loading your whole application

@@ -39,7 +39,6 @@ RSpec.describe Index::Batch, type: :model do
           batch.run_now
         end
       end
-
     end
   end
 end

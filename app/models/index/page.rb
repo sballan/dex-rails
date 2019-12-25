@@ -26,7 +26,7 @@ class Index::Page < ApplicationRecord
 
     download = downloads.create!(content: mechanize_page.body.force_encoding('UTF-8'))
 
-    self.with_lock do
+    with_lock do
       update_links!(download.links)
       update_title!(download.title)
     end

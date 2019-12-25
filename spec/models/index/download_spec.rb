@@ -23,7 +23,7 @@ RSpec.describe Index::Download, type: :model do
         content: '<html><body><a href="https://www.abc.com">My Link</a></body></html>'
       )
 
-      expect(download.links).to eql(["https://www.abc.com/"])
+      expect(download.links).to eql(['https://www.abc.com/'])
     end
   end
 

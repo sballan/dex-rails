@@ -8,20 +8,19 @@ class Index::Batch < ApplicationRecord
     batch_pages.not_downloaded.in_batches(of: 1).each_record do |record|
       begin
         record.fetch_page
-      rescue => ex
-        Rails.logger.error(ex.message)
+      rescue => e
+        Rails.logger.error(e.message)
         record.download_failure = DateTime.now.utc
         record.save
       end
 
       begin
         record.index_page
-      rescue => ex
-        Rails.logger.error(ex.message)
+      rescue => e
+        Rails.logger.error(e.message)
         record.index_failure = DateTime.now.utc
         record.save
       end
     end
   end
-
 end

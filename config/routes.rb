@@ -13,7 +13,6 @@ Rails.application.routes.draw do
     resources :queries
     resources :hosts
     resources :pages
-
   end
 
   root 'queries#index'

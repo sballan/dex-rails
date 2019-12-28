@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Index
   class PagesController < ApplicationController
     before_action :set_page, only: %i[show edit update destroy]

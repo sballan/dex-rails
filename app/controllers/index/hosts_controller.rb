@@ -80,4 +80,3 @@ module Index
     end
   end
 end
-

@@ -21,16 +21,11 @@ FactoryBot.define do
     end
 
     factory :index_page_with_downloads do
-      after(:create) do |index_page, evaluator|
-        VCR.use_cassette('factories/download', :match_requests_on => [:path]) do
+      after(:create) do |index_page, _evaluator|
+        VCR.use_cassette('factories/download', match_requests_on: [:path]) do
           index_page.fetch_page
         end
       end
     end
-
   end
 end
-
-
-
-

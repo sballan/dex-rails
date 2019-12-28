@@ -79,6 +79,6 @@ class Index::Page < ApplicationRecord
 
   def update_links!(links)
     self[:data] ||= {}
-    self[:data]['links'] = links
+    self[:data]['links'] = links.uniq
   end
 end

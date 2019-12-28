@@ -10,6 +10,7 @@ module Index
       Index.all_pages_to_fetch(limit).in_batches.each_record do |record|
         next if queued_hosts.include?(record.index_host_id)
 
+        Rails.logger.info("Queueing #{record.url_string} for download")
         queued_hosts << record.index_host_id
         FetchPageJob.perform_later(record)
       end

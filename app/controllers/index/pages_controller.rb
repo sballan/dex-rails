@@ -81,7 +81,7 @@ module Index
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def page_params
-      params.require(:page).permit(:url_string)
+      params.require(:index_page).permit(:url_string)
     end
   end
 end

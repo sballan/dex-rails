@@ -17,7 +17,7 @@ module Index
     mechanize_agent.get(url_string)
   end
 
-  def self.all_pages_to_download(limit = nil)
+  def self.all_pages_to_fetch(limit = nil)
     Index::Page
       .not_downloaded
       .limit(limit)

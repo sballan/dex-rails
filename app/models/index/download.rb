@@ -29,6 +29,8 @@ class Index::Download < ApplicationRecord
         map[word][:word_count] ||= 0
         map[word][:word_count] += 1
 
+        map[word][:total_words_on_page] ||= extracted_words.count
+
         map[word][:next_values] ||= []
         map[word][:next_values] << extracted_words[index + 1]
         map[word][:next_values].compact!

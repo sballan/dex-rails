@@ -11,7 +11,7 @@ module Services
       word_ids = Index::Word.where(value: words_in_query).pluck(:id)
 
       hit_set = Set.new
-      Index::PageWord.where(word_id: word_ids).limit(1000).in_batches.each_record do |page_word|
+      Index::PageWord.where(index_word_id: word_ids).limit(1000).in_batches.each_record do |page_word|
         page_hit = process_page_hit(page_word)
         hit_set << page_hit if page_hit.present?
       end

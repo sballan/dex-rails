@@ -15,6 +15,24 @@ ActiveRecord::Schema.define(version: 2019_12_25_013138) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "index_batch_pages", force: :cascade do |t|
+    t.bigint "index_batch_id", null: false
+    t.bigint "index_page_id", null: false
+    t.datetime "download_success"
+    t.datetime "download_failure"
+    t.datetime "index_success"
+    t.datetime "index_failure"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["index_batch_id"], name: "index_index_batch_pages_on_index_batch_id"
+    t.index ["index_page_id"], name: "index_index_batch_pages_on_index_page_id"
+  end
+
+  create_table "index_batches", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "index_downloads", force: :cascade do |t|
     t.bigint "index_page_id", null: false
     t.text "content", null: false
@@ -72,6 +90,8 @@ ActiveRecord::Schema.define(version: 2019_12_25_013138) do
     t.index ["value"], name: "index_queries_on_value"
   end
 
+  add_foreign_key "index_batch_pages", "index_batches"
+  add_foreign_key "index_batch_pages", "index_pages"
   add_foreign_key "index_downloads", "index_pages"
   add_foreign_key "index_page_words", "index_pages"
   add_foreign_key "index_page_words", "index_words"

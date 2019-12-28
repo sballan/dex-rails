@@ -44,9 +44,6 @@ group :development do
   gem 'solargraph'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-
-  gem 'factory_bot_rails'
-  gem 'faker'
 end
 
 group :test do
@@ -55,6 +52,9 @@ group :test do
   gem 'vcr'
   gem 'webdrivers'
   gem 'webmock'
+
+  gem 'factory_bot_rails'
+  gem 'faker'
 end
 
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

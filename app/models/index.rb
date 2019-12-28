@@ -42,7 +42,7 @@ module Index
     Rails.cache.fetch(
       "/index/page_cache/#{url_string}", expires_in: 1.hour
     ) do
-      Index::Page.create_or_find_by!(url_string: url_string)
+      Index::Page.lock.find_or_create_by!(url_string: url_string)
     end
   end
 end

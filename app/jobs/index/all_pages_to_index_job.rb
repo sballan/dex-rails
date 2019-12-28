@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Index
-  class IndexAllPagesJob < ApplicationJob
+  class AllPagesToIndexJob < ApplicationJob
     queue_as :indexing
 
     def perform(limit = nil)

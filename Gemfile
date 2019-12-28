@@ -29,8 +29,6 @@ gem 'foreman'
 gem 'newrelic_rpm'
 
 group :development, :test do
-  gem 'factory_bot_rails'
-  gem 'faker'
   gem 'rspec-rails'
   gem 'rubocop-rails'
   gem 'sqlite3', '~> 1.4'
@@ -43,6 +41,9 @@ group :development do
   gem 'solargraph'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  gem 'factory_bot_rails'
+  gem 'faker'
 end
 
 group :test do

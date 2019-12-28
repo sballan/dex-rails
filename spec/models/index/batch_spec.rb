@@ -34,10 +34,7 @@ RSpec.describe Index::Batch, type: :model do
       end
 
       VCR.use_cassette('batches/full_run') do
-        ActiveRecord::Base.logger.silence do
-          # do a lot of querys without noisy logs
-          batch.run_now
-        end
+        batch.run_now
       end
     end
   end

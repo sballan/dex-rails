@@ -30,7 +30,7 @@ module Services
         word: page_word.word.value,
         count: page_word.data['word_count'],
         first_index: page_word.data['first_index'],
-        total_words_on_page: page_word.data['total_word_count']
+        total_words_on_page: page_word.data['total_words_on_page']
       }
     end
   end

@@ -5,8 +5,8 @@ module Index
     queue_as :indexing
 
     def perform(limit = 10)
-      Index::Page.all.in_batches.each_record do |record|
-        Index::IndexPageJob.perform_later(record)
+      Index.all_pages_to_index(limit).in_batches.each_record do |record|
+        IndexPageJob.perform_later(record)
       end
     end
   end

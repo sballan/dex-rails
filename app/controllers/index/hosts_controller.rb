@@ -13,10 +13,6 @@ module Index
     # GET /hosts/1
     # GET /hosts/1.json
     def show
-      if params[:crawl]
-        Rails.logger.debug "Crawling #{@host.url_string}"
-        @host.crawl
-      end
     end
 
     # GET /hosts/new

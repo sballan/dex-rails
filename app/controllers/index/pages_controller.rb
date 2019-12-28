@@ -13,7 +13,7 @@ module Index
     # GET /pages/1
     # GET /pages/1.json
     def show
-      if params[:download]
+      if params[:fetch]
         Rails.logger.debug "Fetching #{@page.url_string}"
         @page.fetch_page
       end

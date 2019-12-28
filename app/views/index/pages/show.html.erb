@@ -5,7 +5,8 @@
   <%= @page.url_string %>
 </p>
 
-<%= link_to 'Index', index_page_path(@page, crawl: true) %>
+<%= link_to 'Fetch', index_page_path(@page, fetch: true) %>
+<%= link_to 'Index', index_page_path(@page, index: true) %>
 
 
 <%= link_to 'Edit', edit_index_page_path(@page) %> |

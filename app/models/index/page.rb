@@ -5,7 +5,7 @@ class Index::Page < ApplicationRecord
   has_many :downloads, class_name: 'Index::Download', foreign_key: :index_page_id, dependent: :destroy
   has_many :page_words, class_name: 'Index::PageWord', foreign_key: :index_page_id, dependent: :destroy
 
-  scope :not_fetched, -> { where(download_success: nil) }
+  scope :not_fetched, -> { where(download_success: nil, download_invalid: nil) }
   scope :not_indexed, -> { where(index_success: nil) }
 
   validates :url_string, presence: true
@@ -34,6 +34,10 @@ class Index::Page < ApplicationRecord
     end
 
     self[:download_success] = Time.now.utc
+    save!
+  rescue Mechanize::RobotsDisallowedError
+    self[:download_failure] = Time.now.utc
+    self[:download_invalid] = Time.now.utc
     save!
   rescue StandardError
     self[:download_failure] = Time.now.utc

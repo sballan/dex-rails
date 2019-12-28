@@ -26,7 +26,10 @@ gem 'webpacker', '~> 4.0'
 gem 'barnes'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'foreman'
-gem 'newrelic_rpm'
+
+group :production do
+  gem 'newrelic_rpm'
+end
 
 group :development, :test do
   gem 'rspec-rails'

@@ -3,13 +3,13 @@
 page_url_strings = [
   'https://soundcloud.com/vulfpeck',
   'https://www.starwars.com/community',
-  'https://arstechnica.com',
-  'https://www.atlasobscura.com',
-  'https://www.bbc.com/news/science_and_environment',
-  'https://www.chemistryworld.com',
-  'https://futurism.com',
-  'https://gizmodo.com',
-  'https://www.npr.org/sections/science'
+  # 'https://arstechnica.com',
+  # 'https://www.atlasobscura.com',
+  # 'https://www.bbc.com/news/science_and_environment',
+  # 'https://www.chemistryworld.com',
+  # 'https://futurism.com',
+  # 'https://gizmodo.com',
+  # 'https://www.npr.org/sections/science'
 ]
 
 FactoryBot.define do

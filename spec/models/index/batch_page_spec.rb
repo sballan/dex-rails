@@ -11,7 +11,7 @@ RSpec.describe Index::BatchPage, type: :model do
     expect(batch_page).to be
   end
 
-  describe '.not_downloaded' do
+  describe '.not_fetched' do
     it 'returns correct pages' do
       batch = Index::Batch.create
 
@@ -25,9 +25,9 @@ RSpec.describe Index::BatchPage, type: :model do
         page: Index::Page.create!(url_string: 'http://www.xys.com')
       )
 
-      batch_pages_not_downloaded = Index::BatchPage.not_downloaded.to_a
+      batch_pages_not_fetched = Index::BatchPage.not_fetched.to_a
 
-      expect(batch_pages_not_downloaded).to eql([batch_page2])
+      expect(batch_pages_not_fetched).to eql([batch_page2])
     end
   end
 

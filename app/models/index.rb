@@ -19,14 +19,14 @@ module Index
 
   def self.all_pages_to_fetch(limit = nil)
     Index::Page
-      .not_downloaded
+      .not_fetched
       .limit(limit)
   end
 
   def self.all_pages_to_index(limit = nil)
     Index::Page
       .not_indexed
-      .where.not(id: Index::Page.not_downloaded)
+      .where.not(id: Index::Page.not_fetched)
       .limit(limit)
   end
 

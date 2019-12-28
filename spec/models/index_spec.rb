@@ -24,9 +24,9 @@ describe Index do
       Index::Page.create!(url_string: 'http://www.abc.com', download_success: Time.now.utc)
       page = Index::Page.create!(url_string: 'http://www.xyz.com')
 
-      pages_not_downloaded = Index.all_pages_to_fetch.to_a
+      pages_not_fetched = Index.all_pages_to_fetch.to_a
 
-      expect(pages_not_downloaded).to eql([page])
+      expect(pages_not_fetched).to eql([page])
     end
   end
 

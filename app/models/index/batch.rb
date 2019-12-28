@@ -5,7 +5,7 @@ class Index::Batch < ApplicationRecord
   has_many :pages, class_name: 'Index::Page', through: :batch_pages
 
   def run_now
-    batch_pages.not_downloaded.in_batches(of: 1).each_record do |record|
+    batch_pages.not_fetched.in_batches(of: 1).each_record do |record|
       begin
         record.fetch_page
       rescue => e

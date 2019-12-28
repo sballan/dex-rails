@@ -9,5 +9,11 @@ Rails.application.routes.draw do
   resources :hosts
   resources :pages
 
+  namespace :index do
+    resources :queries
+    resources :hosts
+    resources :pages
+  end
+
   root 'queries#index'
 end

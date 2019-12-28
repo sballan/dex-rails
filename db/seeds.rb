@@ -7,14 +7,10 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-pages = [
-  Page.create(url_string: 'https://harrypotter.fandom.com/wiki/Main_Page'),
-  Page.create(url_string: 'https://en.wikipedia.org/wiki/Star_Wars'),
-  Page.create(url_string: 'https://soundcloud.com/vulfpeck'),
-  Page.create(url_string: 'https://www.starwars.com/community'),
-  Page.create(url_string: 'https://fanlore.org/wiki/His_Dark_Materials')
+[
+  Index::Page.create(url_string: 'https://harrypotter.fandom.com/wiki/Main_Page'),
+  Index::Page.create(url_string: 'https://en.wikipedia.org/wiki/Star_Wars'),
+  Index::Page.create(url_string: 'https://soundcloud.com/vulfpeck'),
+  Index::Page.create(url_string: 'https://www.starwars.com/community'),
+  Index::Page.create(url_string: 'https://fanlore.org/wiki/His_Dark_Materials')
 ]
-
-batch = IndexingBatch.new
-batch.pages << pages
-batch.save!

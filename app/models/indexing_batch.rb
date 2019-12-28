@@ -69,7 +69,7 @@ class IndexingBatch < ApplicationRecord
       text = Html2Text.convert page_text
       word_values = text.split /\s/
       extracted_words = word_values.map do |word_value|
-        word_value.downcase!
+        word_value.downcase
       rescue StandardError => e
         Rails.logger.info "Could not downcase #{word_value}: #{e.message}"
         word_value

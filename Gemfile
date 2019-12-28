@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.5'
+gem 'bundler'
 
 gem 'connection_pool'
 gem 'html2text'
@@ -26,7 +27,7 @@ gem 'webpacker', '~> 4.0'
 gem 'barnes'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'foreman'
-gem 'newrelic_rpm'
+# gem 'newrelic_rpm'
 
 
 group :development, :test do

@@ -35,4 +35,10 @@ module Index
       Index::Word.lock.find_or_create_by!(value: word_value)
     end
   end
+
+  def self.page_cache(url_string)
+    Rails.cache.fetch("/index/page_cache/#{url_string}") do
+      Index::Page.create_or_find_by!(url_string: link)
+    end
+  end
 end

@@ -43,32 +43,32 @@ class Index::Page < ApplicationRecord
   def index_page
     raise "can't index before download" unless downloads.any?
 
-    words_map = most_recent_download.generate_words_map
-
-    words_map.keys.each_slice(100) do |slice|
-      Index::Word.upsert_all(
-        slice.map { |k| { value: k, created_at: Time.now.utc, updated_at: Time.now.utc } },
-        unique_by: :index_index_words_on_value
-      )
-    end
-
-    page_word_data = []
-
-    Index::Word.where(value: words_map.keys).in_batches.each_record do |word|
-      page_word_data << {
-        index_word_id: word.id,
-        index_page_id: id,
-        data: words_map[word.value],
-        created_at: Time.now.utc,
-        updated_at: Time.now.utc
-      }
-    end
-
-    page_word_data.each_slice(100) do |slice|
+    generate_page_word_data.each_slice(500) do |slice|
       Index::PageWord.upsert_all(
         slice,
         unique_by: :index_index_page_words_on_index_word_id_and_index_page_id
       )
+    end
+
+    self[:index_success] = Time.now.utc
+    save!
+  rescue StandardError
+    self[:index_failure] = Time.now.utc
+    save!
+  end
+
+  def generate_page_word_data
+    words_map = most_recent_download.generate_words_map
+
+    words_map.map do |word_value, data|
+      word_id = Index.word_cache(word_value).id
+      {
+        index_word_id: word_id,
+        index_page_id: id,
+        data: data,
+        created_at: Time.now.utc,
+        updated_at: Time.now.utc
+      }
     end
   end
 

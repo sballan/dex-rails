@@ -29,4 +29,10 @@ module Index
       .where.not(id: Index::Page.not_downloaded)
       .limit(limit)
   end
+
+  def self.word_cache(word_value)
+    Rails.cache.fetch("/index/word_cache/#{word_value}") do
+      Index::Word.lock.find_or_create_by!(value: word_value)
+    end
+  end
 end

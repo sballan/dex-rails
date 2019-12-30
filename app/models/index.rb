@@ -32,7 +32,7 @@ module Index
 
   def self.word_id_cache(word_value)
     Rails.cache.fetch(
-      "/index/word_id_cache/#{word_value.hash}", expires_in: 1.day
+      "/index/word_id_cache/#{word_value.hash}", expires_in: 1.month
     ) do
       Index::Word.create_or_find_by!(value: word_value).id
     end

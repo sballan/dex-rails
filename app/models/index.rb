@@ -32,7 +32,7 @@ module Index
 
   def self.word_id_cache(word_value)
     Rails.cache.fetch(
-      "/index/word_id_cache/#{word_value}", expires_in: 1.day
+      "/index/word_id_cache/#{word_value.hash}", expires_in: 1.day
     ) do
       Index::Word.create_or_find_by!(value: word_value).id
     end
@@ -40,7 +40,7 @@ module Index
 
   def self.page_id_cache(url_string)
     Rails.cache.fetch(
-      "/index/page_id_cache/#{url_string}", expires_in: 1.hour
+      "/index/page_id_cache/#{url_string.hash}", expires_in: 1.hour
     ) do
       Index::Page.create_or_find_by!(url_string: url_string).id
     end

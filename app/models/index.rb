@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest/sha1'
+
 module Index
   def self.table_name_prefix
     'index_'
@@ -31,16 +33,18 @@ module Index
   end
 
   def self.word_id_cache(word_value)
+    key = Digest::SHA1.hexdigest(word_value)
     Rails.cache.fetch(
-      "/index/word_id_cache/#{word_value.hash}", expires_in: 1.month
+      "/index/word_id_cache/#{key}", expires_in: 1.month
     ) do
       Index::Word.create_or_find_by!(value: word_value).id
     end
   end
 
   def self.page_id_cache(url_string)
+    key = Digest::SHA1.hexdigest(url_string)
     Rails.cache.fetch(
-      "/index/page_id_cache/#{url_string.hash}", expires_in: 1.hour
+      "/index/page_id_cache/#{key}", expires_in: 1.hour
     ) do
       Index::Page.create_or_find_by!(url_string: url_string).id
     end

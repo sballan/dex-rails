@@ -8,7 +8,7 @@ module Index
       page.index_page
 
       page.data && page.data['links'].each do |link|
-        Index.page_cache(link)
+        Index.page_id_cache(link)
       end
     end
   end

@@ -37,6 +37,7 @@ module Index
     Rails.cache.fetch(
       "/index/word_id_cache/#{key}", expires_in: 1.month
     ) do
+      Rails.logger.info "word_id_cache: Cache miss for '#{word_value}'"
       Index::Word.create_or_find_by!(value: word_value).id
     end
   end
@@ -46,6 +47,7 @@ module Index
     Rails.cache.fetch(
       "/index/page_id_cache/#{key}", expires_in: 1.hour
     ) do
+      Rails.logger.info "page_id_cache: Cache miss for '#{url_string}'"
       Index::Page.create_or_find_by!(url_string: url_string).id
     end
   end

@@ -2,7 +2,7 @@
 
 module Index
   class QueueFetchPagesJob < ApplicationJob
-    queue_as :indexing
+    queue_as :downloading
 
     def perform(limit = 10)
       queued_hosts = Set.new

@@ -47,7 +47,7 @@ class Index::Page < ApplicationRecord
   def index_page
     raise "can't index before download" unless downloads.any?
 
-    generate_page_word_data.each_slice(500) do |slice|
+    generate_page_word_data.each_slice(100) do |slice|
       Index::PageWord.upsert_all(
         slice,
         unique_by: :index_index_page_words_on_index_word_id_and_index_page_id
@@ -65,7 +65,7 @@ class Index::Page < ApplicationRecord
     words_map = most_recent_download.generate_words_map
 
     words_map.map do |word_value, data|
-      word_id = Index.word_cache(word_value).id
+      word_id = Index.word_id_cache(word_value)
       {
         index_word_id: word_id,
         index_page_id: id,

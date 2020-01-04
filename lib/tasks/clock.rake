@@ -9,8 +9,8 @@ namespace :clock do
     loop do
       Rails.logger.info 'Clock 1min tick'
 
-      fetch_num = 20
-      index_num = 40
+      fetch_num = ENV.fetch('PAGE_QUEUE_FETCH_SIZE', 25).to_i
+      index_num = ENV.fetch('PAGE_QUEUE_INDEX_SIZE', 50).to_i
 
       Rails.logger.info "Clock is scheduling #{fetch_num} to fetch and #{index_num} to index"
       Index::QueueFetchPagesJob.perform_later fetch_num

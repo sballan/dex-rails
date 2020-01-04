@@ -2,4 +2,4 @@
 :queues:
   - [downloading, 1]
   - [indexing, 8]
-  - [clock, 99999999]
+  - [clock, 64]

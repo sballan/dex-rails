@@ -11,6 +11,7 @@ module Index
     return @agent unless @agent.nil?
 
     @agent ||= Mechanize.new
+    @agent.history.max_size = 10 # default is 50
     @agent.robots = true
     @agent
   end

@@ -1,16 +1,7 @@
 namespace :clock do
   desc 'Run every 10 minutes'
   task ten: :environment do
-    loop do
-      Rails.logger.info "Clock 10min tick"
-      Index::QueueFetchPagesJob.perform_later(
-        ENV.fetch('PAGE_QUEUE_FETCH_SIZE', 1000).to_i
-      )
-      Index::QueueIndexPagesJob.perform_later(
-        ENV.fetch('PAGE_QUEUE_INDEX_SIZE', 1000).to_i
-      )
-      sleep 10.minutes
-    end
+    ClockTenJob.perform_later
   end
 
   desc 'Run every 1 minute'
@@ -18,8 +9,8 @@ namespace :clock do
     loop do
       Rails.logger.info 'Clock 1min tick'
 
-      fetch_num = 10
-      index_num = 20
+      fetch_num = 50
+      index_num = 100
 
       Rails.logger.info "Clock is scheduling #{fetch_num} to fetch and #{index_num} to index"
       Index::QueueFetchPagesJob.perform_later fetch_num

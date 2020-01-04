@@ -10,6 +10,8 @@ class ClockTenJob < ApplicationJob
   end
 
   def tick
+    Rails.logger.info "ClockTenJob tick: #{Time.now.localtime}"
+
     Index::QueueFetchPagesJob.perform_later(
       ENV.fetch('PAGE_QUEUE_FETCH_SIZE', 50).to_i
     )

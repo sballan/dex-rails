@@ -5,7 +5,7 @@ module Index
     queue_as :downloading
 
     def perform(limit = 10)
-      query_limit = limit * 50
+      query_limit = limit * 20
       queued_hosts = Set.new
 
       Index.all_pages_to_fetch(query_limit).in_batches.each_record.with_index do |record, index|

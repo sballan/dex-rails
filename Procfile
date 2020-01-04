@@ -1,4 +1,5 @@
 web: rails s --port $PORT --environment $RAILS_ENV
+clock: rake clock:ten
 worker: sidekiq --environment $RAILS_ENV
 worker_clone: sidekiq --environment $RAILS_ENV
 worker_high_thread: env RAILS_MAX_THREADS=5 sidekiq --environment $RAILS_ENV

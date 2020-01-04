@@ -5,12 +5,12 @@ module Index
     queue_as :downloading
 
     def perform(limit = 10)
-      query_limit = limit * 100
+      query_limit = limit * 50
       queued_hosts = Set.new
 
-      Index.all_pages_to_fetch(query_limit).in_batches.each_record do |record|
+      Index.all_pages_to_fetch(query_limit).in_batches.each_record.with_index do |record, index|
         if queued_hosts.size > limit
-          Rails.logger.info "Queue Fetch Pages: queued #{queued_hosts.size} out of #{query_limit} pages, skipping the rest"
+          Rails.logger.info "Queue Fetch Pages: queued #{queued_hosts.size} out of #{index} pages, skipping the remaining #{query_limit - index}"
           break
         end
 

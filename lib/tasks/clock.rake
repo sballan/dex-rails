@@ -16,10 +16,16 @@ namespace :clock do
   desc 'Run every 1 minute'
   task one: :environment do
     loop do
-      Rails.info "Clock 1min tick"
-      Index::QueueFetchPagesJob.perform_later 10
-      Index::QueueIndexPagesJob.perform_later 20
-      sleep 1.minutes
+      Rails.info 'Clock 1min tick'
+
+      fetch_num = 10
+      index_num = 20
+
+      Rails.logger.info "Clock is scheduling #{fetch_num} to fetch and #{index_num} to index"
+      Index::QueueFetchPagesJob.perform_later fetch_num
+      Index::QueueIndexPagesJob.perform_later index_num
+
+      sleep 1.minute
     end
   end
 end

@@ -1,4 +1,4 @@
 :concurrency: <%= ENV['RAILS_MAX_THREADS'] || 5 %>
 :queues:
   - [downloading, 1]
-  - [indexing, 5]
+  - [indexing, 8]

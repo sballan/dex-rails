@@ -2,7 +2,7 @@ namespace :clock do
   desc 'Run every 10 minutes'
   task ten: :environment do
     loop do
-      Rails.info "Clock 10min tick"
+      Rails.logger.info "Clock 10min tick"
       Index::QueueFetchPagesJob.perform_later(
         ENV.fetch('PAGE_QUEUE_FETCH_SIZE', 1000).to_i
       )
@@ -16,7 +16,7 @@ namespace :clock do
   desc 'Run every 1 minute'
   task one: :environment do
     loop do
-      Rails.info 'Clock 1min tick'
+      Rails.logger.info 'Clock 1min tick'
 
       fetch_num = 10
       index_num = 20

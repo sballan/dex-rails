@@ -102,7 +102,7 @@ class Index::Page < ApplicationRecord
   def generate_page_word_data
     begin
       words_map = most_recent_download.generate_words_map
-    rescue Standard => e
+    rescue StandardError => e
       raise IndexInvalidError, "Error while trying to create words map: #{e.message}"
     end
 

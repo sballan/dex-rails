@@ -56,6 +56,11 @@ class Index::Page < ApplicationRecord
 
     self[:download_success] = Time.now.utc
     save!
+  rescue Mechanize::ResponseCodeError => e
+    raise e unless e.response_code == '404'
+
+    self[:download_invalid] = Time.now.utc
+    save!
   rescue FetchInvalidError, Mechanize::RobotsDisallowedError
     self[:download_invalid] = Time.now.utc
     save!

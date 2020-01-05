@@ -42,6 +42,8 @@ class Index::Page < ApplicationRecord
   rescue StandardError
     self[:download_failure] = Time.now.utc
     save!
+
+    raise
   end
 
   def index_page
@@ -59,6 +61,8 @@ class Index::Page < ApplicationRecord
   rescue StandardError
     self[:index_failure] = Time.now.utc
     save!
+
+    raise
   end
 
   def generate_page_word_data

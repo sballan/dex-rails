@@ -88,7 +88,8 @@ class Index::Page < ApplicationRecord
 
     self[:index_success] = Time.now.utc
     save!
-  rescue IndexInvalidError
+  rescue IndexInvalidError => e
+    Rails.logger.error e.message
     self[:index_invalid] = Time.now.utc
     save!
   rescue StandardError
@@ -101,10 +102,8 @@ class Index::Page < ApplicationRecord
   def generate_page_word_data
     begin
       words_map = most_recent_download.generate_words_map
-    rescue ArgumentError => e
-      raise e unless e.message == 'invalid byte sequence in UTF-8'
-
-      raise IndexInvalidError, 'Encountered invalid byte sequence in UTF-8 while trying to index'
+    rescue Standard => e
+      raise IndexInvalidError, "Error while trying to create words map: #{e.message}"
     end
 
     words_map.map do |word_value, data|

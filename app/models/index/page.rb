@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Index::Page < ApplicationRecord
+  class FetchInvalidError < StandardError; end
+  class FetchFailureError < StandardError; end
+
   belongs_to :host, class_name: 'Index::Host', foreign_key: :index_host_id
   has_many :downloads, class_name: 'Index::Download', foreign_key: :index_page_id, dependent: :destroy
   has_many :page_words, class_name: 'Index::PageWord', foreign_key: :index_page_id, dependent: :destroy
@@ -41,7 +44,8 @@ class Index::Page < ApplicationRecord
 
   def fetch_page
     mechanize_page = Index.fetch_page(url_string)
-    raise 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
+    raise FetchFailureError, 'Page is nil' if mechanize_page.nil?
+    raise FetchInvalidError, 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
 
     download = downloads.create!(content: mechanize_page.body.force_encoding('UTF-8'))
 
@@ -52,8 +56,7 @@ class Index::Page < ApplicationRecord
 
     self[:download_success] = Time.now.utc
     save!
-  rescue Mechanize::RobotsDisallowedError
-    self[:download_failure] = Time.now.utc
+  rescue FetchInvalidError, Mechanize::RobotsDisallowedError
     self[:download_invalid] = Time.now.utc
     save!
   rescue StandardError

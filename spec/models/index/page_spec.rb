@@ -42,8 +42,8 @@ RSpec.describe Index::Page, type: :model do
     end
 
     it 'returns correct pages' do
-      Index::Page.create!(url_string: 'http://www.abc.com', download_success: Time.now.utc)
-      page = Index::Page.create!(url_string: 'http://www.xys.com')
+      create(:index_page, download_success: Time.now.utc)
+      page = create(:index_page)
 
       pages_not_fetched = Index::Page.not_fetched.to_a
 
@@ -57,8 +57,8 @@ RSpec.describe Index::Page, type: :model do
     end
 
     it 'returns correct pages' do
-      Index::Page.create!(url_string: 'http://www.abc.com', index_success: Time.now.utc)
-      page = Index::Page.create!(url_string: 'http://www.xys.com')
+      create(:index_page, index_success: Time.now.utc)
+      page = create(:index_page)
 
       pages_not_indexed = Index::Page.not_indexed.to_a
 
@@ -66,9 +66,44 @@ RSpec.describe Index::Page, type: :model do
     end
   end
 
+  describe '.to_fetch' do
+    after(:all) do
+      Index::Page.destroy_all
+    end
+
+    it 'returns correct pages' do
+      page1 = create(:index_page, download_success: Time.now.utc)
+      page2 = create(:index_page, download_failure: Time.now.utc)
+      page3 = create(:index_page, download_invalid: Time.now.utc)
+      page4 = create(:index_page)
+
+      pages_not_fetched = Index::Page.to_fetch.to_a
+
+      expect(pages_not_fetched).to eql([page2, page4])
+    end
+  end
+
+  describe '.to_index' do
+    after(:all) do
+      Index::Page.destroy_all
+    end
+
+    it 'returns correct pages' do
+      page1 = create(:index_page, index_success: Time.now.utc)
+      page2 = create(:index_page, index_failure: Time.now.utc)
+      page3 = create(:index_page, download_success: Time.now.utc)
+      page4 = create(:index_page, index_success: Time.now.utc, download_success: Time.now.utc)
+      page5 = create(:index_page)
+
+      pages_not_fetched = Index::Page.to_index.to_a
+
+      expect(pages_not_fetched).to eql([page3])
+    end
+  end
+
   describe '#most_recent_download' do
     before(:all) do
-      @page = Index::Page.create!(url_string: 'http://www.soundcloud.com')
+      @page = create(:index_page, url_string: 'http://www.soundcloud.com')
 
       VCR.use_cassette('pages/soundcloud') do
         @page.fetch_page
@@ -88,7 +123,7 @@ RSpec.describe Index::Page, type: :model do
 
   describe '#fetch_page' do
     before(:all) do
-      @page = Index::Page.create!(url_string: 'http://www.wikipedia.org')
+      @page = create(:index_page, url_string: 'http://www.wikipedia.org')
 
       VCR.use_cassette('pages/wikipedia') do
         @page.fetch_page
@@ -114,7 +149,7 @@ RSpec.describe Index::Page, type: :model do
 
   describe '#index_page' do
     before(:all) do
-      @page = Index::Page.create!(url_string: 'http://www.wikipedia.org')
+      @page = create(:index_page, url_string: 'http://www.wikipedia.org')
 
       VCR.use_cassette('pages/wikipedia') do
         @page.fetch_page

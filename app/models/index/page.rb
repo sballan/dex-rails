@@ -62,7 +62,7 @@ class Index::Page < ApplicationRecord
     self[:download_success] = Time.now.utc
     save!
   rescue Mechanize::ResponseCodeError => e
-    raise e unless %w[410 404 403 400].include?(e.response_code)
+    # raise e unless %w[500 410 409 404 403 400].include?(e.response_code)
 
     self[:download_invalid] = Time.now.utc
     save!

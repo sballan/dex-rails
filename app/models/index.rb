@@ -28,8 +28,7 @@ module Index
 
   def self.all_pages_to_index(limit = nil)
     Index::Page
-      .not_indexed
-      .where.not(id: Index::Page.not_fetched)
+      .to_index
       .limit(limit)
   end
 

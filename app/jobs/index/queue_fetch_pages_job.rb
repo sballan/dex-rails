@@ -8,7 +8,12 @@ module Index
       query_limit = limit * 100
       queued_hosts = Set.new
 
-      Index.all_pages_to_fetch(query_limit).in_batches.each_record.with_index do |record, index|
+      Index.all_pages_to_fetch
+           .order('RANDOM()')
+           .limit(query_limit)
+           .in_batches
+           .each_record
+           .with_index do |record, index|
         if queued_hosts.size > limit
           Rails.logger.info "Queue Fetch Pages: queued #{queued_hosts.size} out of #{index} pages, skipping the remaining #{query_limit - index}"
           break

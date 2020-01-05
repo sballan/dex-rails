@@ -52,21 +52,4 @@ module Index
     end
   end
 
-  # @deprecated
-  def self.word_cache(word_value)
-    Rails.cache.fetch(
-      "/index/word_cache/#{word_value}", expires_in: 1.day
-    ) do
-      Index::Word.lock.find_or_create_by!(value: word_value)
-    end
-  end
-
-  # @deprecated
-  def self.page_cache(url_string)
-    Rails.cache.fetch(
-      "/index/page_cache/#{url_string}", expires_in: 1.hour
-    ) do
-      Index::Page.lock.find_or_create_by!(url_string: url_string)
-    end
-  end
 end

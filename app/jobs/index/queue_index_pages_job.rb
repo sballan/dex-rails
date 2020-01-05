@@ -6,7 +6,6 @@ module Index
 
     def perform(limit = 10)
       Index.all_pages_to_index
-           .order('RANDOM()')
            .limit(limit)
            .in_batches
            .each_record do |record|

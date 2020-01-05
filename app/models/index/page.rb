@@ -49,7 +49,8 @@ class Index::Page < ApplicationRecord
     raise FetchFailureError, 'Page is nil' if mechanize_page.nil?
     raise FetchInvalidError, 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
 
-    download = downloads.create!(content: mechanize_page.body.force_encoding('UTF-8'))
+    download_content = mechanize_page.body.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+    download = downloads.create!(content: download_content)
 
     with_lock do
       update_links!(download.links)

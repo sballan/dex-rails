@@ -3,6 +3,7 @@
 class Index::Page < ApplicationRecord
   class FetchInvalidError < StandardError; end
   class FetchFailureError < StandardError; end
+  class IndexInvalidError < StandardError; end
 
   belongs_to :host, class_name: 'Index::Host', foreign_key: :index_host_id
   has_many :downloads, class_name: 'Index::Download', foreign_key: :index_page_id, dependent: :destroy
@@ -84,6 +85,9 @@ class Index::Page < ApplicationRecord
 
     self[:index_success] = Time.now.utc
     save!
+  rescue IndexInvalidError
+    self[:index_invalid] = Time.now.utc
+    save!
   rescue StandardError
     self[:index_failure] = Time.now.utc
     save!
@@ -92,7 +96,13 @@ class Index::Page < ApplicationRecord
   end
 
   def generate_page_word_data
-    words_map = most_recent_download.generate_words_map
+    begin
+      words_map = most_recent_download.generate_words_map
+    rescue ArgumentError => e
+      raise e unless e.message == 'invalid byte sequence in UTF-8'
+
+      raise IndexInvalidError, 'Encountered invalid byte sequence in UTF-8 while trying to index'
+    end
 
     words_map.map do |word_value, data|
       word_id = Index.word_id_cache(word_value)

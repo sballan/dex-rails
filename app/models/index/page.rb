@@ -22,7 +22,8 @@ class Index::Page < ApplicationRecord
 
   scope :to_index, lambda {
     where(
-      index_success: nil
+      index_success: nil,
+      index_invalid: nil
     ).where.not(
       download_success: nil
     )

@@ -92,8 +92,9 @@ RSpec.describe Index::Page, type: :model do
       page1 = create(:index_page, index_success: Time.now.utc)
       page2 = create(:index_page, index_failure: Time.now.utc)
       page3 = create(:index_page, download_success: Time.now.utc)
-      page4 = create(:index_page, index_success: Time.now.utc, download_success: Time.now.utc)
-      page5 = create(:index_page)
+      page4 = create(:index_page, download_success: Time.now.utc, index_invalid: Time.now.utc)
+      page5 = create(:index_page, index_success: Time.now.utc, download_success: Time.now.utc)
+      page6 = create(:index_page)
 
       pages_not_fetched = Index::Page.to_index.to_a
 

@@ -50,6 +50,8 @@ class Index::Page < ApplicationRecord
     raise FetchInvalidError, 'Only html pages are supported' unless mechanize_page.is_a?(Mechanize::Page)
 
     download_content = mechanize_page.body.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+    raise FetchInvalidError, 'Page is blank' if download_content.blank?
+
     download = downloads.create!(content: download_content)
 
     with_lock do
@@ -60,7 +62,7 @@ class Index::Page < ApplicationRecord
     self[:download_success] = Time.now.utc
     save!
   rescue Mechanize::ResponseCodeError => e
-    raise e unless %w[404 403 400].include?(e.response_code)
+    raise e unless %w[410 404 403 400].include?(e.response_code)
 
     self[:download_invalid] = Time.now.utc
     save!

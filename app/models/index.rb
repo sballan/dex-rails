@@ -45,7 +45,7 @@ module Index
   def self.page_id_cache(url_string)
     key = Digest::SHA1.hexdigest(url_string)
     Rails.cache.fetch(
-      "/index/page_id_cache/#{key}", expires_in: 1.hour
+      "/index/page_id_cache/#{key}", expires_in: 2.hours
     ) do
       Rails.logger.info "page_id_cache: Cache miss for '#{url_string}'"
       Index::Page.create_or_find_by!(url_string: url_string).id

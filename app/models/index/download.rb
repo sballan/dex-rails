@@ -12,7 +12,7 @@ class Index::Download < ApplicationRecord
   end
 
   def generate_words_map
-    word_values = page_text.split(/[^\w]+/)
+    word_values = page_text.split(/[^a-zA-Z0-9]+/)
     extracted_words = word_values.map do |word_value|
       word_value.downcase
     rescue StandardError => e

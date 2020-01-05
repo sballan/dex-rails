@@ -64,7 +64,7 @@ class Index::Page < ApplicationRecord
 
     self[:download_invalid] = Time.now.utc
     save!
-  rescue FetchInvalidError, Mechanize::RobotsDisallowedError
+  rescue FetchInvalidError, Mechanize::RobotsDisallowedError, Mechanize::RedirectLimitReachedError
     self[:download_invalid] = Time.now.utc
     save!
   rescue StandardError

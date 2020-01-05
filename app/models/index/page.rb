@@ -5,8 +5,25 @@ class Index::Page < ApplicationRecord
   has_many :downloads, class_name: 'Index::Download', foreign_key: :index_page_id, dependent: :destroy
   has_many :page_words, class_name: 'Index::PageWord', foreign_key: :index_page_id, dependent: :destroy
 
+  # @deprecated
   scope :not_fetched, -> { where(download_success: nil, download_invalid: nil) }
+  # @deprecated
   scope :not_indexed, -> { where(index_success: nil) }
+
+  scope :to_fetch, lambda {
+    where(
+      download_success: nil,
+      download_invalid: nil
+    )
+  }
+
+  scope :to_index, lambda {
+    where(
+      index_success: nil
+    ).where.not(
+      download_success: nil
+    )
+  }
 
   validates :url_string, presence: true
 

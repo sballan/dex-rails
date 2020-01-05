@@ -96,9 +96,9 @@ RSpec.describe Index::Page, type: :model do
       page5 = create(:index_page, index_success: Time.now.utc, download_success: Time.now.utc)
       page6 = create(:index_page)
 
-      pages_not_fetched = Index::Page.to_index.to_a
+      pages_not_indexed = Index::Page.to_index.to_a
 
-      expect(pages_not_fetched).to eql([page3])
+      expect(pages_not_indexed).to eql([page3])
     end
   end
 

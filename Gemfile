@@ -18,7 +18,7 @@ gem 'sidekiq'
 
 gem 'dotenv-rails'
 gem 'jbuilder', '~> 2.7'
-gem 'puma', '~> 3.12'
+gem 'puma', '~> 4.3'
 gem 'rails', '~> 6.0.0'
 gem 'sass-rails', '~> 5'
 gem 'turbolinks', '~> 5'
